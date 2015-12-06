@@ -1,19 +1,23 @@
 /// <reference path="../typings/mocha/mocha.d.ts" />
-import app from '../src/day-1';
+/// <reference path="../typings/chai/chai.d.ts" />
+import gotoFloor from '../src/day-1';
+import { expect } from 'chai';
 
-describe('Calculator', () => {
-  var subject : app;
-
-  beforeEach(function () {
-    subject = new app();
-  });
-
-  describe('#add', () => {
-    it('should add two numbers together', () => {
-      const result : number = subject.add(2, 3);
-      if (result !== 5) {
-        throw new Error('Expected 2 + 3 = 5 but was ' + result);
-      }
+describe('day 1', () => {
+  [
+    ['(())', 0],
+    ['()()', 0],
+    ['(((', 3],
+    ['(()(()(', 3],
+    ['))(((((', 3],
+    ['())', -1],
+    ['))(', -1],
+    [')))', -3],
+    [')())())', -3]
+  ].forEach((test: [string, number]) => {
+    let [spec, floor] = test;
+    it(`tests ${spec} to go to ${floor}`, () => {
+      expect(gotoFloor(spec)).to.equal(floor);
     });
   });
 });
