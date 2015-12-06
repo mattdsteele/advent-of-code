@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install": "tsd install mocha",
+    "install": "tsd install",
     "pretest": "tsc",
     "test": "mocha built/test"
   },
