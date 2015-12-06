@@ -1,6 +1,6 @@
 /// <reference path="../typings/mocha/mocha.d.ts" />
 /// <reference path="../typings/chai/chai.d.ts" />
-import gotoFloor from '../src/day-1';
+import gotoFloor from '../src/day-1/day-1';
 import { expect } from 'chai';
 
 describe('day 1', () => {
