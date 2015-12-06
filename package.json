@@ -1,0 +1,19 @@
+{
+  "name": "advent-of-code",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install": "tsd install mocha",
+    "pretest": "tsc",
+    "test": "mocha built/test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^2.3.4",
+    "tsd": "^0.6.5",
+    "typescript": "^1.7.3"
+  }
+}
