@@ -16,5 +16,8 @@
     "mocha": "^2.3.4",
     "tsd": "^0.6.5",
     "typescript": "^1.7.3"
+  },
+  "dependencies": {
+    "uint-js": "0.0.4"
   }
 }
