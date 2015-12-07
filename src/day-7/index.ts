@@ -2,18 +2,33 @@
 var UInt = require('uint-js').UInt;
 
 let memoize = fn => {
-  let memoized = function() {
+  let memoized = () => {
     var cached = memoized['cache'];
     if (!cached) {
       let result = fn.apply(this);
       memoized['cache'] = result;
     }
-     return memoized['cache'];
+    return memoized['cache'];
+  };
+  memoized['uncache'] = () => {
+    memoized['cache'] = undefined;
   };
   return memoized;
 };
 
-export function gateValues(steps: string[]) {
+let unmemoize = gates => {
+  for (let key of Object.keys(gates)) {
+    if (gates[key]['uncache']) {
+      gates[key]['uncache']();
+    }
+  }
+};
+
+let identityGate = val => {
+  return () => val;
+};
+
+export function makeGates(steps: string[]) {
 
   let gates = {};
 
@@ -24,9 +39,6 @@ export function gateValues(steps: string[]) {
     };
   };
 
-  let identityGate = val => {
-    return () => val;
-  };
 
   let passthroughGate = val => {
     return () => gates[val]();
@@ -78,5 +90,11 @@ export function gateValues(steps: string[]) {
       }
     }
   }
+  return gates;
+}
+
+export function newIdentity(gates, gate: string, newVal: number) {
+  unmemoize(gates);
+  gates[gate] = memoize(identityGate(newVal));
   return gates;
 }

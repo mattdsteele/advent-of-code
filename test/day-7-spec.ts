@@ -1,7 +1,7 @@
 /// <reference path="../typings/mocha/mocha.d.ts" />
 /// <reference path="../typings/chai/chai.d.ts" />
 
-import { gateValues } from '../src/day-7/';
+import { makeGates, newIdentity } from '../src/day-7/';
 import { expect } from 'chai';
 
 describe('day 7', () => {
@@ -51,8 +51,24 @@ describe('day 7', () => {
     ].forEach((test: [string[], number]) => {
       let [steps, aVal] = test;
       it(`tests ${steps}`, () => {
-        let gates = gateValues(steps);
+        let gates = makeGates(steps);
         expect(gates['a']()).to.equal(aVal);
+      });
+    });
+  });
+  describe('gold', () => {
+    [
+      [[
+        '123 -> x',
+        '456 -> y',
+        'x AND y -> a'
+      ], 67]
+    ].forEach((test: [string[], number]) => {
+      let [steps, aVal] = test;
+      it(`tests ${steps}`, () => {
+        let gates = makeGates(steps);
+        let newGates = newIdentity(gates, 'y', 455);
+        expect(newGates['a']()).to.equal(aVal);
       });
     });
   });
