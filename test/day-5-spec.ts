@@ -4,7 +4,7 @@ import { isNice, isNiceGold } from '../src/day-5/';
 import { expect } from 'chai';
 
 describe('day 5', () => {
-  describe('silver', () => { //these tests are too slow to always run!
+  describe('silver', () => {
     [
       ['ugknbfddgicrmopn', true],
       ['aaa', true],
@@ -18,7 +18,7 @@ describe('day 5', () => {
       });
     });
   });
-  describe('gold', () => { //these tests are too slow to always run!
+  describe('gold', () => {
     [
       ['qjhvhtzxzqqjkmpb', true],
       ['xxyxx', true],
