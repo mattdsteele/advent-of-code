@@ -3,7 +3,7 @@
 import { numChars, replaced, expand } from '../src/day-8/';
 import { expect } from 'chai';
 
-describe('day 1', () => {
+describe('day 8', () => {
   describe('silver', () => {
     [
       [`""`, 0],
