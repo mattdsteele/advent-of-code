@@ -13,4 +13,27 @@ let recurse = (results:string, currentValue:string, count:number, restOfString):
   return recurse(results, nextValue, count + 1, restOfString.slice(1));
 };
 
-export let lookAndSay = (input:string):string => startRecursion(input.split(''));
+let lookAndSayRecursive = (input:string):string => startRecursion(input.split(''));
+let lookAndSayProcedural = (inStr:string):string => {
+  let result = '';
+  let input:string[] = inStr.split('');
+  let [ currentValue ] = input.splice(0, 1);
+  let count = 1;
+
+  while(input.length > 0) {
+    let [ nextValue ] = input.splice(0, 1);
+    if (nextValue !== currentValue) {
+      result += count;
+      result += currentValue;
+      currentValue = nextValue;
+      count = 1;
+    } else {
+      count++;
+    }
+  }
+  result += count;
+  result += currentValue;
+  return result;
+};
+
+export let lookAndSay = lookAndSayProcedural;
