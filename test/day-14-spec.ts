@@ -1,6 +1,6 @@
 /// <reference path="../typings/mocha/mocha.d.ts" />
 /// <reference path="../typings/chai/chai.d.ts" />
-import { parseLine, distanceAt } from '../src/day-14/';
+import { parseLine, distanceAt, getDeer, goldState } from '../src/day-14/';
 import { expect } from 'chai';
 
 describe('day 14', () => {
@@ -39,6 +39,25 @@ describe('day 14', () => {
       it(`tests dancer at ${timestamp}`, () => {
         let [seconds, distance] = timestamp;
         expect(distanceAt(dancer, seconds)).to.equal(distance);
+      });
+    });
+  });
+  describe('gold', () => {
+    let lines = [
+      'Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds.',
+      'Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.'
+    ];
+    let deer = getDeer(lines);
+    [
+      [1, 1, 0],
+      [140, 139, 1],
+      [1000, 689, 312]
+    ].forEach(spec => {
+      it.skip('calculates proper pointage', () => {
+        let [ timestamp, dancer, comet ] = spec;
+        let gameState = goldState(deer, timestamp);
+        expect(gameState.filter(s => s.name === 'Dancer')[0].points).to.equal(dancer);
+        expect(gameState.filter(s => s.name === 'Comet')[0].points).to.equal(comet);
       });
     });
   });

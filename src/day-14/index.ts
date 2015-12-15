@@ -20,10 +20,41 @@ export let parseLine = (line:string):Reindeer => {
   };
 };
 
-export let fastestDeer = (lines:string[], timestamp:number):number => {
-  return lines.map(line => parseLine(line))
-    .map(deer => distanceAt(deer, timestamp))
+let deerWithPositions = (deer:Reindeer[], timestamp:number) => {
+  return deer
+    .map(d => { 
+      return { deer: d.reindeer, position: distanceAt(d, timestamp) }
+    });
+};
+
+let fastest = (deer, timestamp) => {
+  return deerWithPositions(deer, timestamp)
+    .map(deer => deer.position)
     .sort((a, b) => b - a)[0];
+};
+
+export let fastestDeer = (lines:string[], timestamp:number):number => {
+  return fastest(getDeer(lines), timestamp);
+};
+
+export let getDeer = (lines:string[]):Reindeer[] => {
+  return lines.map(line => parseLine(line));
+};
+
+export let goldState = (deer:Reindeer[], timestamp: number) => {
+  let deerWithPoints:any[] = deer.map(d => {
+    return { name: d.reindeer, points: 0 };
+  });
+  for (let i = 1; i <= timestamp; i++) {
+    var deerAt = deerWithPositions(deer, i)
+      .sort((a, b) => b.position - a.position);
+    let winners = deerAt.filter(d => d.position === deerAt[0].position);
+    winners.forEach(d => {
+      var point = deerWithPoints.filter(deerPoint => deerPoint.name === d.deer)[0];
+      point.points = point.points + 1;
+    });
+  }
+  return deerWithPoints;
 };
 
 export let distanceAt = (reindeer:Reindeer, timestamp:number):number => {
