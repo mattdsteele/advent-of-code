@@ -1,5 +1,5 @@
 /// <reference path="../../typings/node/node.d.ts" />
-import {matchingSues} from './';
+import {matchingSues, goldScenario} from './';
 import * as fs from 'fs';
 
 let input = fs.readFileSync('./inputs/day-16.txt', 'utf8');
@@ -22,3 +22,4 @@ let scans = {
 
 let sues = matchingSues(strings, scans);
 console.log(`silver:`, sues);
+console.log('gold:', goldScenario(strings, scans));

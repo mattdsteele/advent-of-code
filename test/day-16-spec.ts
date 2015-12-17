@@ -1,6 +1,6 @@
 /// <reference path="../typings/mocha/mocha.d.ts" />
 /// <reference path="../typings/chai/chai.d.ts" />
-import { parseLine, matchesLady, matchingSues } from '../src/day-16/';
+import { parseLine, matchesLady, matchingSues, goldScenario } from '../src/day-16/';
 import { expect } from 'chai';
 
 describe('day 15', () => {
@@ -53,5 +53,20 @@ describe('day 15', () => {
       'Sue 3: cats: 9, trees: 9, akitas: 0',
     ], items);
     expect(sues).to.include.members(['1', '3']);
+  });
+  describe('gold', () => {
+    it('knows how to find ranges', () => {
+      let items = {
+        goldfish: 7,
+        trees: 9,
+        akitas: 0,
+      };
+      let test = [
+      'Sue 1: goldfish: 3, trees: 11, akitas: 0',
+      'Sue 2: goldfish: 8, trees: 11, akitas: 0'
+      ];
+      expect(goldScenario(test, items)).to.include.members(['1']);
+      expect(goldScenario(test, items)).not.to.include.members(['2']);
+    });
   });
 });

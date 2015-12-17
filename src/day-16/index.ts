@@ -10,9 +10,34 @@ export let parseLine = (input:string):any => {
   return results;
 };
 
-export let matchesLady = (sue, items:any):boolean => {
+let greaterThan = (sue, scanned) => sue > scanned;
+let fewerThan = (sue, scanned) => sue < scanned;
+
+let strategy = {
+  cats: greaterThan,
+  trees: greaterThan,
+  pomeranians: fewerThan,
+  goldfish: fewerThan
+};
+
+let equalityStrategy = (sue, scanned, item) => {
+    return sue === undefined || sue === scanned;
+};
+
+let scanningStrategy = (sue, scanned, item) => {
+  if (sue === undefined) {
+    return true;
+  }
+  let uniqueStrategy = strategy[item];
+  if (uniqueStrategy) {
+    return uniqueStrategy(sue, scanned);
+  }
+  return sue === scanned;
+};
+
+export let matchesLady = (sue, items:any, strategy=equalityStrategy):boolean => {
   return Object.keys(items).map(item => {
-    return sue[item] === undefined || sue[item] === items[item];
+    return strategy(sue[item], items[item], item);
   })
   .filter(e => e === false)
   .length === 0;
@@ -20,6 +45,12 @@ export let matchesLady = (sue, items:any):boolean => {
 
 export let matchingSues = (inputs:string[], items:any):number[] => {
   return inputs.map(i => parseLine(i))
-    .map(sue => matchesLady(sue, items) ? sue.name : -1)
+    .map(sue => matchesLady(sue, items, equalityStrategy) ? sue.name : -1)
+    .filter(sue => sue !== -1);
+};
+
+export let goldScenario = (inputs:string[], items:any):number[] => {
+  return inputs.map(i => parseLine(i))
+    .map(sue => matchesLady(sue, items, scanningStrategy) ? sue.name : -1)
     .filter(sue => sue !== -1);
 };
