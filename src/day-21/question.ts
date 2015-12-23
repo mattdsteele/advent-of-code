@@ -1,4 +1,4 @@
-import { costOfWinners } from './';
+import { costOfWinners, costOfLosers } from './';
 
 let weapons = [
   { cost: 8, damage: 4, armor: 0 },
@@ -39,3 +39,5 @@ let boss = {
 
 let silver = costOfWinners(player, boss, weapons, armor, rings);
 console.log(`silver: ${silver[0]}`);
+let gold = costOfLosers(player, boss, weapons, armor, rings);
+console.log(`gold: ${gold[0]}`);

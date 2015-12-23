@@ -31,6 +31,7 @@ export let doesPlayerWin = (player:Stats, boss:Stats):boolean => {
   return playRound(player, boss, true);
 };
 
+//REFACTOR ME PLEASE
 export let goShopping = (weapons:Equipment[], armor:Equipment[], rings:Equipment[]):Equipment[] => {
   let ringOptions:Equipment[] = [ { cost: 0, damage: 0, armor: 0 } ];
   ringOptions = ringOptions.concat(rings);
@@ -69,7 +70,7 @@ export let goShopping = (weapons:Equipment[], armor:Equipment[], rings:Equipment
   }));
 };
 
-export let costOfWinners = (player:Stats, boss:Stats, weapons:Equipment[], armor:Equipment[], rings:Equipment[]):any[] => {
+let permuteAndPrice = (player:Stats, boss:Stats, weapons:Equipment[], armor:Equipment[], rings:Equipment[]):any[] => {
   return goShopping(weapons, armor, rings).map((adjustedValue:Equipment) => {
     return {
       cost: adjustedValue.cost,
@@ -77,8 +78,19 @@ export let costOfWinners = (player:Stats, boss:Stats, weapons:Equipment[], armor
           { hp: player.hp, armor: player.armor + adjustedValue.armor, damage: player.damage + adjustedValue.damage }, 
           { hp: boss.hp, armor: boss.armor, damage: boss.damage })
     }
-  })
-  .filter(result => result.wins)
-  .map(result => result.cost)
-  .sort((a, b) => a - b);
+  });
+};
+
+export let costOfWinners = (player:Stats, boss:Stats, weapons:Equipment[], armor:Equipment[], rings:Equipment[]):any[] => {
+  return permuteAndPrice(player, boss, weapons, armor, rings)
+    .filter(result => result.wins)
+    .map(result => result.cost)
+    .sort((a, b) => a - b);
+};
+
+export let costOfLosers = (player:Stats, boss:Stats, weapons:Equipment[], armor:Equipment[], rings:Equipment[]):any[] => {
+  return permuteAndPrice(player, boss, weapons, armor, rings)
+    .filter(result => !result.wins)
+    .map(result => result.cost)
+    .sort((a, b) => b - a);
 };
