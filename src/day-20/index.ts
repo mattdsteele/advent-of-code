@@ -27,7 +27,6 @@ let calculate = (minimum, algorithm):number => {
   let houseNumber = 0;
   while (true) {
     let presents = algorithm(houseNumber);
-    console.log(houseNumber, presents);
     if (presents >= minimum) {
       return houseNumber;
     }

@@ -19,7 +19,6 @@ describe('day 19', () => {
   it('makes distinct molecules', () => {
     let input = 'HOH';
     let molecules = distinctMolecules(rules, input);
-    console.log(molecules);
     expect(molecules.length).to.equal(4);
     expect(molecules).to.include.members(['HOOH', 'HOHO', 'OHOH', 'HHHH']);
   });
