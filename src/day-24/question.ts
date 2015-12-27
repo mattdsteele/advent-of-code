@@ -9,3 +9,4 @@ let numbers = input.split('\n')
   .map(x => parseInt(x));
 
 console.log(`silver: ${idealQe(numbers)}`);
+console.log(`gold: ${idealQe(numbers, 4)}`);
