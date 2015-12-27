@@ -18,6 +18,7 @@
     "typescript": "^1.7.3"
   },
   "dependencies": {
+    "js-combinatorics": "^0.5.0",
     "lodash": "^3.10.1",
     "rx": "^4.0.7",
     "uint-js": "0.0.4"
