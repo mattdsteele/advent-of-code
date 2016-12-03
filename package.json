@@ -1,26 +1,40 @@
 {
   "name": "advent-of-code",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "install": "tsd install",
-    "pretest": "tsc",
-    "test": "mocha built/test"
-  },
-  "keywords": [],
+  "version": "0.0.0",
+  "description": "advent-of-code",
+  "license": "MIT",
+  "repository": "",
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "chai": "^3.4.1",
-    "mocha": "^2.3.4",
-    "tsd": "^0.6.5",
-    "typescript": "^1.7.3"
+  "keywords": [
+    ""
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "clean": "rimraf lib",
+    "lint": "tslint --force --format verbose \"src/**/*.ts\"",
+    "build": "npm run clean && npm run lint && echo Using TypeScript && tsc --version && tsc --pretty",
+    "test": "npm run build && mocha --compilers ts:ts-node/register --recursive test/**/*-spec.ts",
+    "watch": "npm run build -- --watch",
+    "watch:test": "npm run test -- --watch"
   },
   "dependencies": {
-    "js-combinatorics": "^0.5.0",
-    "lodash": "^3.10.1",
-    "rx": "^4.0.7",
-    "uint-js": "0.0.4"
+  },
+  "devDependencies": {
+    "@types/chai": "3.4.30",
+    "@types/mocha": "2.2.29",
+    "@types/node": "6.0.31",
+    "chai": "^3.5.0",
+    "mocha": "^3.0.1",
+    "rimraf": "^2.5.4",
+    "ts-node": "^1.2.2",
+    "tslint": "3.15.1",
+    "typescript": "2.0.3"
+  },
+  "engines": {
+    "node": ">=4.0.0"
   }
 }

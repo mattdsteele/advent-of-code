@@ -1,4 +1,3 @@
-node_modules
-typings
-*.js
-built
+coverage/
+node_modules/
+npm-debug.log

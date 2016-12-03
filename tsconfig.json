@@ -1,14 +1,18 @@
 {
-    "compilerOptions": {
-        "moduleResolution": "node",
-        "module": "commonjs",
-        "target": "es5",
-        "noImplicitAny": false,
-        "outDir": "built",
-        "rootDir": ".",
-        "sourceMap": true
-    },
-    "exclude": [
-        "node_modules"
-    ]
+  "compilerOptions": {
+    "declaration": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "./lib",
+    "preserveConstEnums": true,
+    "removeComments": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*-spec.ts"
+  ]
 }
