@@ -17,11 +17,13 @@
     "clean": "rimraf lib",
     "lint": "tslint --force --format verbose \"src/**/*.ts\"",
     "build": "npm run clean && npm run lint && echo Using TypeScript && tsc --version && tsc --pretty",
-    "test": "npm run build && mocha --compilers ts:ts-node/register --recursive test/**/*-spec.ts",
+    "test": "npm run build && mocha --compilers ts:ts-node/register --recursive src/**/*-spec.ts",
     "watch": "npm run build -- --watch",
     "watch:test": "npm run test -- --watch"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.41",
+    "lodash": "^4.17.2"
   },
   "devDependencies": {
     "@types/chai": "3.4.30",
