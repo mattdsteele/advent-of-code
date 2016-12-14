@@ -38,7 +38,7 @@ const applyMapping = (mappings:{[dir:string]: number}, direction:string, amount:
 const xDelta = (direction:string, amount:number) => applyMapping({ E: 1, W: -1 }, direction, amount);
 const yDelta = (direction:string, amount:number) => applyMapping({ N: 1, S: -1 }, direction, amount);
 
-const calculateRotationIndex = (rotation: string) => {
+const calculateRotationIndex = (rotation: string):number => {
   switch(rotation) {
     case 'R':
       return 1;
@@ -55,7 +55,7 @@ const step = (current:Status, instruction:string):Status => {
 
   const directions = ['N', 'E', 'S', 'W'];
   const currentDirectionIndex = directions.indexOf(current.direction);
-  const newDirectionIndex = (currentDirectionIndex + calculateRotationIndex(rotation) + 4) % 4;
+  const newDirectionIndex:number = (currentDirectionIndex + calculateRotationIndex(rotation) + 4) % 4;
   const newDirection = directions[newDirectionIndex];
 
 
