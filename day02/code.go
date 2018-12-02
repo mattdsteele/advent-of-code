@@ -47,9 +47,46 @@ func getChecksum(lines []string) int {
 func toRunes(input string) []string {
 	return strings.Split(input, "")
 }
-func main() {
+func runeDifferences(a string, b string) int {
+	differentLetters := 0
+	aRunes := toRunes(a)
+	bRunes := toRunes(b)
+	for i, ch := range aRunes {
+		if bRunes[i] != ch {
+			differentLetters++
+		}
+	}
+	return differentLetters
+}
+func correctBoxes(lines []string) (box1 string, box2 string) {
+	for i, line := range lines {
+		restofLines := lines[i+1:]
+		for _, testLine := range restofLines {
+			if runeDifferences(line, testLine) == 1 {
+				return line, testLine
+			}
+		}
+	}
+	panic("nope")
+}
+func findSimilarLetters(a string, b string) string {
+	similarLetters := []string{}
+	aRunes := toRunes(a)
+	bRunes := toRunes(b)
+	for i, ch := range aRunes {
+		if bRunes[i] == ch {
+			similarLetters = append(similarLetters, ch)
+		}
+	}
+	return strings.Join(similarLetters, "")
+
+}
+func silver() {
 	lines := util.ReadFile("./day02/input.txt")
 	fmt.Println(getChecksum(lines))
-
+}
+func main() {
+	lines := util.ReadFile("./day02/input.txt")
+	fmt.Println(findSimilarLetters(correctBoxes(lines)))
 }
 
