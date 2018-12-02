@@ -3,6 +3,7 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"strings"
 )
 
 func ReadFile(path string) []string {
@@ -17,5 +18,9 @@ func ReadFile(path string) []string {
 		shifts = append(shifts, scanner.Text())
 	}
 	return shifts
+}
+
+func SliceAtLine(input string) []string {
+	return strings.Split(input, "\n")
 }
 
