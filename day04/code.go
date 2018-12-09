@@ -1,4 +1,5 @@
 package main
+
 import (
 	"fmt"
 	"regexp"
@@ -66,31 +67,37 @@ func sleepiestMinute(guard string, shifts []shiftStart, logs []log) int {
 	}
 	return sleepiestMinute
 }
-func makeSleepMap(guard string, shifts []shiftStart, logs []log) map[int]int {
-	sleepHourMinutes := make(map[int]int)
+func shiftsForGuard(guard string, shifts []shiftStart) (guardShifts []shiftStart) {
 	for _, shift := range shifts {
 		if shift.guard == guard {
-			dayLogs := logsForDay(logs, shift.startDate)
-			logIdx := 0
-			asleep := false
-			if len(dayLogs) == 0 {
-				break
+			guardShifts = append(guardShifts, shift)
+		}
+	}
+	return guardShifts
+}
+func makeSleepMap(guard string, shifts []shiftStart, logs []log) map[int]int {
+	sleepHourMinutes := make(map[int]int)
+	for _, shift := range shiftsForGuard(guard, shifts) {
+		dayLogs := logsForDay(logs, shift.startDate)
+		logIdx := 0
+		asleep := false
+		if len(dayLogs) == 0 {
+			break
+		}
+		for i := 0; i < 60; i++ {
+			if dayLogs[logIdx].date.Minute() == i {
+				if dayLogs[logIdx].action == "falls asleep" {
+					asleep = true
+				} else {
+					asleep = false
+				}
+				logIdx++
 			}
-			for i := 0; i < 60; i++ {
-				if dayLogs[logIdx].date.Minute() == i {
-					if dayLogs[logIdx].action == "falls asleep" {
-						asleep = true
-					} else {
-						asleep = false
-					}
-					logIdx++
-				}
-				if asleep {
-					sleepHourMinutes[i]++
-				}
-				if logIdx >= len(dayLogs) {
-					break
-				}
+			if asleep {
+				sleepHourMinutes[i]++
+			}
+			if logIdx >= len(dayLogs) {
+				break
 			}
 		}
 	}
@@ -160,6 +167,15 @@ func parseFile(input []string) (days []shiftStart, logs []log) {
 func sameDay(a time.Time, b time.Time) bool {
 	return a.Year() == b.Year() && a.YearDay() == b.YearDay()
 }
+func repetitiveSleepMinutes(guard string, shifts []shiftStart, logs []log) (sleepiestMinute int, sleepiestCount int) {
+	for i, count := range makeSleepMap(guard, shifts, logs) {
+		if count > sleepiestCount {
+			sleepiestCount = count
+			sleepiestMinute = i
+		}
+	}
+	return sleepiestMinute, sleepiestCount
+}
 func logsForDay(logs []log, day time.Time) (dayLogs []log) {
 	for _, log := range logs {
 		if sameDay(log.date, day) {
@@ -169,11 +185,30 @@ func logsForDay(logs []log, day time.Time) (dayLogs []log) {
 	return dayLogs
 }
 
+// Gold
 func main() {
 	lines := util.ReadFile("./day04/input")
-	days, logs := parseFile(lines)
-	guard := sleepiestGuard(days, logs)
-	minute := sleepiestMinute(guard, days, logs)
+	shifts, logs := parseFile(lines)
+	var sleepiestCount, sleepiestMinute int
+	var sleepiestGuard string
+	for _, guard := range uniqueGuards(shifts) {
+		guardsSleepiestMinute, guardsSleepiestCount := repetitiveSleepMinutes(guard, shifts, logs)
+		if guardsSleepiestCount > sleepiestCount {
+			sleepiestCount = guardsSleepiestCount
+			sleepiestGuard = guard
+			sleepiestMinute = guardsSleepiestMinute
+		}
+	}
+	guardNo, _ := strconv.Atoi(sleepiestGuard)
+	fmt.Println(sleepiestMinute * guardNo)
+}
+
+// Silver
+func mainSilver() {
+	lines := util.ReadFile("./day04/input")
+	shifts, logs := parseFile(lines)
+	guard := sleepiestGuard(shifts, logs)
+	minute := sleepiestMinute(guard, shifts, logs)
 	guardNo, _ := strconv.Atoi(guard)
 	fmt.Println(minute * guardNo)
 }
