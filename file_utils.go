@@ -1,4 +1,5 @@
 package util
+
 import (
 	"bufio"
 	"log"
@@ -19,7 +20,6 @@ func ReadFile(path string) []string {
 	}
 	return shifts
 }
-
 func SliceAtLine(input string) []string {
 	return strings.Split(input, "\n")
 }
