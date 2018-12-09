@@ -1,9 +1,13 @@
 package main
 import (
+	"fmt"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
+
+	util "github.com/mattdsteele/advent-of-code"
 )
 
 type log struct {
@@ -27,6 +31,76 @@ func (l *log) parseAwake() {
 	} else {
 		l.action = "falls asleep"
 	}
+}
+func uniqueGuards(days []shiftStart) (guardNumbers []string) {
+	foundVals := make(map[string]bool)
+	for _, day := range days {
+		foundVals[day.guard] = true
+	}
+	for k := range foundVals {
+		guardNumbers = append(guardNumbers, k)
+	}
+	return guardNumbers
+}
+
+func sleepiestGuard(shifts []shiftStart, logs []log) (sleepyGuard string) {
+	mostMinutesSlept := 0
+	for _, guard := range uniqueGuards(shifts) {
+		sleptMinutes := totalMinutesAsleep(guard, shifts, logs)
+		if sleptMinutes > mostMinutesSlept {
+			mostMinutesSlept = sleptMinutes
+			sleepyGuard = guard
+		}
+	}
+	return sleepyGuard
+}
+func sleepiestMinute(guard string, shifts []shiftStart, logs []log) int {
+	sleepMap := makeSleepMap(guard, shifts, logs)
+	mostSleep := 0
+	var sleepiestMinute int
+	for i, v := range sleepMap {
+		if v > mostSleep {
+			mostSleep = v
+			sleepiestMinute = i
+		}
+	}
+	return sleepiestMinute
+}
+func makeSleepMap(guard string, shifts []shiftStart, logs []log) map[int]int {
+	sleepHourMinutes := make(map[int]int)
+	for _, shift := range shifts {
+		if shift.guard == guard {
+			dayLogs := logsForDay(logs, shift.startDate)
+			logIdx := 0
+			asleep := false
+			if len(dayLogs) == 0 {
+				break
+			}
+			for i := 0; i < 60; i++ {
+				if dayLogs[logIdx].date.Minute() == i {
+					if dayLogs[logIdx].action == "falls asleep" {
+						asleep = true
+					} else {
+						asleep = false
+					}
+					logIdx++
+				}
+				if asleep {
+					sleepHourMinutes[i]++
+				}
+				if logIdx >= len(dayLogs) {
+					break
+				}
+			}
+		}
+	}
+	return sleepHourMinutes
+}
+func totalMinutesAsleep(guard string, shifts []shiftStart, logs []log) (minutesAsleep int) {
+	for _, v := range makeSleepMap(guard, shifts, logs) {
+		minutesAsleep += v
+	}
+	return minutesAsleep
 }
 func getDate(raw string) time.Time {
 	dt, err := time.Parse("2006-01-02 15:04", raw[1:17])
@@ -95,5 +169,12 @@ func logsForDay(logs []log, day time.Time) (dayLogs []log) {
 	return dayLogs
 }
 
-func main() {}
+func main() {
+	lines := util.ReadFile("./day04/input")
+	days, logs := parseFile(lines)
+	guard := sleepiestGuard(days, logs)
+	minute := sleepiestMinute(guard, days, logs)
+	guardNo, _ := strconv.Atoi(guard)
+	fmt.Println(minute * guardNo)
+}
 

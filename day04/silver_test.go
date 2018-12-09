@@ -115,7 +115,8 @@ func TestLogDays(t *testing.T) {
 [1518-11-04 00:46] wakes up
 [1518-11-05 00:03] Guard #99 begins shift
 [1518-11-05 00:45] falls asleep
-[1518-11-05 00:55] wakes up`
+[1518-11-05 00:55] wakes up
+[1518-11-06 00:00] Guard #11 begins shift`
 	dayLogs, lines := parseFile(util.SliceAtLine(input))
 	t.Name()
 	firstDayLogs := logsForDay(lines, dayLogs[0].startDate)
@@ -125,5 +126,14 @@ func TestLogDays(t *testing.T) {
 	secondDayLogs := logsForDay(lines, dayLogs[1].startDate)
 	util.Equals(t, 2, len(secondDayLogs))
 	util.Equals(t, 40, secondDayLogs[0].date.Minute())
+
+	uniqueGuards := uniqueGuards(dayLogs)
+	util.Equals(t, 3, len(uniqueGuards))
+
+	util.Equals(t, 50, totalMinutesAsleep("10", dayLogs, lines))
+	util.Equals(t, 30, totalMinutesAsleep("99", dayLogs, lines))
+
+	util.Equals(t, "10", sleepiestGuard(dayLogs, lines))
+	util.Equals(t, 24, sleepiestMinute("10", dayLogs, lines))
 }
 
