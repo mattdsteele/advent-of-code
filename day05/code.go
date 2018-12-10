@@ -1,6 +1,7 @@
 package main
 import (
 	"fmt"
+	"runtime"
 	"strings"
 
 	util "github.com/mattdsteele/advent-of-code"
@@ -32,19 +33,41 @@ func mainSilver() {
 	afterReaction := react(lines[0])
 	fmt.Println(len(afterReaction))
 }
+
+type result struct {
+	letter string
+	length int
+}
+
+func worker(id int, jobs <-chan string, results chan<- result, line string) {
+	for letter := range jobs {
+		fmt.Println("Worker", id, "Testing", letter)
+		testWithoutLetter := removeFromFixture(letter, line)
+		afterReaction := react(testWithoutLetter)
+		results <- result{letter, len(afterReaction)}
+	}
+	close(results)
+}
 func main() {
 	// Gold
 	line := util.ReadFile("./day05/input")[0]
-	var smallestLetter int
+	cpus := runtime.NumCPU()
+	jobs := make(chan string, 100)
+	results := make(chan result, 100)
+	for i := 0; i < cpus; i++ {
+		go worker(i, jobs, results, line)
+	}
 	for _, letter := range "QWERTYUIOPASDFGHJKLZXCVBNM" {
-		testWithoutLetter := removeFromFixture(string(letter), line)
-		fmt.Println("Testing ", string(letter))
-		afterReaction := react(testWithoutLetter)
-		sizeAfterReaction := len(afterReaction)
-		if smallestLetter == 0 || sizeAfterReaction < smallestLetter {
-			smallestLetter = sizeAfterReaction
-			fmt.Println("New smallest letter", string(letter), sizeAfterReaction)
+		jobs <- (string(letter))
+	}
+	close(jobs)
+	smallestAfterReaction := 9999999999999
+	for result := range results {
+		if result.length < smallestAfterReaction {
+			smallestAfterReaction = result.length
+			fmt.Println("New smallest letter", result.letter, smallestAfterReaction)
 		}
 	}
+	fmt.Println("Smallest letter is", smallestAfterReaction)
 }
 
