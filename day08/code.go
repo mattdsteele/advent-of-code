@@ -15,27 +15,25 @@ func toNumbers(input string) (numbers []int) {
 	return numbers
 }
 
-func metadata(els []int, startChar int) (total int, endMetadata int) {
-	numMetadataElements := els[startChar+1]
-	numChildren := els[startChar]
-	currentChildrenSum, currentChildrenEndMetadata := 0, startChar+2
+func metadata(els []int, idx int) (total int, endMetadata int) {
+	numMetadataElements := els[idx+1]
+	numChildren := els[idx]
+	childrenSum, idx := 0, idx+2
 	for ; numChildren != 0; numChildren-- {
-		childSum, endChildMetadata := metadata(els, currentChildrenEndMetadata)
-		currentChildrenSum += childSum
-		currentChildrenEndMetadata = endChildMetadata + 1
+		childSum, childEndIdx := metadata(els, idx)
+		childrenSum += childSum
+		idx = childEndIdx
 	}
-	startMetadata := currentChildrenEndMetadata
-	endMetadata = startMetadata + numMetadataElements
-	metadataElements := els[startMetadata:endMetadata]
+	endMetadata = idx + numMetadataElements
+	metadataElements := els[idx:endMetadata]
 	for _, el := range metadataElements {
 		total += el
 	}
-	return total + currentChildrenSum, endMetadata - 1
+	return total + childrenSum, endMetadata
 }
 
 func checksum(input string, startChar int) (total int) {
-	els := toNumbers(input)
-	sum, _ := metadata(els, startChar)
+	sum, _ := metadata(toNumbers(input), startChar)
 	return sum
 }
 func main() {
