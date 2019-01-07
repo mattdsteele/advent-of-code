@@ -109,16 +109,27 @@ func worker(id int, results chan<- int, input <-chan string) {
 }
 
 type Manager struct {
-	done     chan<- bool
-	wg       *sync.WaitGroup
-	workers  []*Worker
-	stepTime int
+	done           chan<- bool
+	wg             *sync.WaitGroup
+	workers        []*Worker
+	stepTime       int
+	inputs         []parsedInput
+	completedSteps []string
+	unstartedSteps []string
 }
 
 func (m *Manager) tick() {
+	newSteps := newlyAvailableSteps(m.inputs, m.completedSteps, m.unstartedSteps)
+	fmt.Println("Ticking!", m.completedSteps, newSteps, m.unstartedSteps)
 	m.wg.Add(len(m.workers))
 	for _, worker := range m.workers {
-		fmt.Println("Worker needs work? ", worker.id, worker.needsWork())
+		if worker.needsWork() && len(newSteps) > 0 {
+			step := newSteps[0]
+			newSteps = newSteps[1:]
+			worker.enqueue(step, stepTime(step, m.stepTime)-1)
+			m.unstartedSteps = remove(m.unstartedSteps, step)
+			fmt.Println("New unstarted steps:", m.unstartedSteps)
+		}
 		go worker.tick(m.wg)
 	}
 	fmt.Println("Ticked all")
@@ -138,19 +149,18 @@ func (w *Worker) tick(wg *sync.WaitGroup) {
 	if w.workingStep == "" {
 		return
 	}
-	fmt.Println("Ticking", w.id, w.secondsLeft)
 	if w.secondsLeft == 0 {
 		w.finishedStep <- w.workingStep
 		w.workingStep = ""
 		return
 	}
 	w.secondsLeft--
-	fmt.Println("Seconds left on WG", w.secondsLeft, w.id)
 }
 
 func (w *Worker) enqueue(step string, time int) {
 	w.workingStep = step
 	w.secondsLeft = time
+	fmt.Println(w.id, "Enqueueing step", w.workingStep, w.secondsLeft)
 }
 
 func (w *Worker) needsWork() bool {
@@ -170,69 +180,41 @@ func timeWithHelpers(inputs []parsedInput, stepTime int, workerCount int) int {
 	}
 	var wg sync.WaitGroup
 	done := make(chan bool)
-	manager := Manager{done, &wg, workers, stepTime}
+	manager := Manager{done: done, wg: &wg, workers: workers, stepTime: stepTime, inputs: inputs}
 
-	completedSteps := []string{}
 	allSteps := uniqueSteps(inputs)
-	// availableSteps := zeroPreqsSteps(inputs)
-	// sortSteps(availableSteps)
+	manager.unstartedSteps = uniqueSteps(inputs)
+	manager.completedSteps = []string{}
 	// Run through steps
-	for i := 0; len(completedSteps) < len(allSteps); i++ {
-		// Just for testing
-		if i > 10 {
-			break
-		}
+	i := 0
+next:
+	for ; len(manager.completedSteps) < len(allSteps); i++ {
 		go manager.tick()
-		select {
-		case <-done:
-		case step := <-finishedSteps:
-			fmt.Println("Done with step ", step)
-			completedSteps = append(completedSteps, step)
+		for {
+			select {
+			case <-done:
+				fmt.Println("Done with tick ", i)
+				continue next
+			case step := <-finishedSteps:
+				fmt.Println("Done with step ", step)
+				manager.completedSteps = append(manager.completedSteps, step)
+			}
 		}
-		fmt.Println("Done with tick ", i)
 	}
-	fmt.Println("Done!!", completedSteps)
-	return 0
+	fmt.Println(manager.completedSteps)
+	return i
 }
 
-func sampleReqs() []parsedInput {
-	return []parsedInput{
-		{before: "C", after: "A"},
-		{before: "C", after: "F"},
-		{before: "A", after: "B"},
-		{before: "A", after: "D"},
-		{before: "B", after: "E"},
-		{before: "D", after: "E"},
-		{before: "F", after: "E"},
-	}
-}
 func main() {
-	timeWithHelpers(sampleReqs(), 1, 2)
+	lines := util.ReadFile("./day07/input")
+	steps := []parsedInput{}
+	for _, line := range lines {
+		steps = append(steps, parseLine(line))
+	}
+	totalTime := timeWithHelpers(steps, 60, 5)
+	fmt.Println("Total time taken", totalTime)
 }
 
-func totalTime(inputs []parsedInput, stepTime int, workerCount int) int {
-	// availableSteps := zeroPreqsSteps(inputs)
-	results := make(chan int)
-	input := make(chan string)
-	// fmt.Println("initial available steps", availableSteps)
-	// count := 0
-	// for _, in := range []string{"A", "B", "C", "D", "E", "F"} {
-	// 	fmt.Println("Data in", in)
-	// 	input <- in
-	// }
-	// close(input)
-	for i := 0; i < workerCount; i++ {
-		go worker(i, results, input)
-	}
-	// for i := range results {
-	// 	fmt.Println("Made it here", i)
-	// 	count++
-	// 	if count == 6 {
-	// 		close(results)
-	// 	}
-	// }
-	return 0
-}
 func silverMain() {
 	// Silver
 	lines := util.ReadFile("./day07/input")
