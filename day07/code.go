@@ -28,16 +28,6 @@ func depsFor(inputs []parsedInput, step string) (steps []string) {
 	}
 	return steps
 }
-func dependentsOf(inputs []parsedInput, step string) (steps []string) {
-	steps = []string{}
-	for _, input := range inputs {
-		if input.before == step {
-			steps = append(steps, input.after)
-		}
-	}
-	sortSteps(steps)
-	return steps
-}
 func uniqueSteps(inputs []parsedInput) (steps []string) {
 	uniqueNames := make(map[string]bool)
 	for _, step := range inputs {
@@ -51,67 +41,58 @@ func uniqueSteps(inputs []parsedInput) (steps []string) {
 	return steps
 
 }
-func uniques(stepsWitDupes []string) (steps []string) {
-	steps = []string{}
-	uniqueNames := make(map[string]bool)
-	for _, step := range stepsWitDupes {
-		uniqueNames[step] = true
-	}
-	for k := range uniqueNames {
-		steps = append(steps, k)
-	}
-	sortSteps(steps)
-	return steps
 
-}
 func sortSteps(steps []string) {
 	sort.Slice(steps, func(i, j int) bool {
 		return steps[i] < steps[j]
 	})
 }
-func zeroPreqsSteps(inputs []parsedInput) (steps []string) {
-	for _, step := range uniqueSteps(inputs) {
-		if len(depsFor(inputs, step)) == 0 {
-			steps = append(steps, step)
+
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
 		}
 	}
-	return steps
+	return false
+}
+func isAvailable(inputs []parsedInput, step string, completedSteps []string) bool {
+	for _, dep := range depsFor(inputs, step) {
+		if !contains(completedSteps, dep) {
+			return false
+		}
+	}
+	return true
 }
 
-func availableDependents(inputs []parsedInput, dependents, completedSteps []string) []string {
-	available := []string{}
-	uniqueSteps := make(map[string]bool)
-	for _, step := range completedSteps {
-		uniqueSteps[step] = true
-	}
-	for _, step := range dependents {
-		deps := depsFor(inputs, step)
-		depsCompleted := true
-		for _, dep := range deps {
-			if _, ok := uniqueSteps[dep]; !ok {
-				depsCompleted = false
-			}
-		}
-		if depsCompleted {
-			available = append(available, step)
+func newlyAvailableSteps(inputs []parsedInput, completedSteps, unstartedSteps []string) (newSteps []string) {
+	for _, step := range unstartedSteps {
+		if isAvailable(inputs, step, completedSteps) {
+			newSteps = append(newSteps, step)
 		}
 	}
-	return available
+	sortSteps(newSteps)
+	return newSteps
 }
-func stepOrder(inputs []parsedInput) (stepOrder []string) {
-	stepOrder = []string{}
-	availableSteps := zeroPreqsSteps(inputs)
-	for len(availableSteps) > 0 {
-		currentStep := availableSteps[0]
-		stepOrder = append(stepOrder, currentStep)
-		availableSteps = availableSteps[1:]
-		dependents := dependentsOf(inputs, currentStep)
-		availableDependents := availableDependents(inputs, dependents, stepOrder)
-		availableSteps = append(availableSteps, availableDependents...)
-		availableSteps = uniques(availableSteps)
-		sortSteps(availableSteps)
+
+func remove(steps []string, stepToRemove string) (newSteps []string) {
+	for _, step := range steps {
+		if step != stepToRemove {
+			newSteps = append(newSteps, step)
+		}
 	}
-	return stepOrder
+	return newSteps
+}
+
+func stepOrder(inputs []parsedInput) (completedSteps []string) {
+	unstartedSteps := uniqueSteps(inputs)
+	for len(unstartedSteps) > 0 {
+		availableSteps := newlyAvailableSteps(inputs, completedSteps, unstartedSteps)
+		currentStep := availableSteps[0]
+		completedSteps = append(completedSteps, currentStep)
+		unstartedSteps = remove(unstartedSteps, currentStep)
+	}
+	return completedSteps
 }
 
 func stepTime(letter string, stepTime int) int {
@@ -193,8 +174,8 @@ func timeWithHelpers(inputs []parsedInput, stepTime int, workerCount int) int {
 
 	completedSteps := []string{}
 	allSteps := uniqueSteps(inputs)
-	availableSteps := zeroPreqsSteps(inputs)
-	sortSteps(availableSteps)
+	// availableSteps := zeroPreqsSteps(inputs)
+	// sortSteps(availableSteps)
 	// Run through steps
 	for i := 0; len(completedSteps) < len(allSteps); i++ {
 		// Just for testing

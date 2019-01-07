@@ -46,36 +46,6 @@ func TestNumberOfPrerequisites(t *testing.T) {
 	}
 }
 
-func TestDependents(t *testing.T) {
-	type dependents struct {
-		step      string
-		nextSteps []string
-	}
-	fixtures := []dependents{
-		{step: "C", nextSteps: []string{"A", "F"}},
-		{step: "A", nextSteps: []string{"B", "D"}},
-	}
-	for _, fixture := range fixtures {
-		dependents := dependentsOf(reqs(), fixture.step)
-		util.Equals(t, dependents, fixture.nextSteps)
-	}
-}
-
-func TestZeroDepSteps(t *testing.T) {
-	reqs := []parsedInput{
-		{before: "G", after: "A"},
-		{before: "C", after: "A"},
-		{before: "C", after: "F"},
-		{before: "A", after: "B"},
-		{before: "A", after: "D"},
-		{before: "B", after: "E"},
-		{before: "D", after: "E"},
-		{before: "F", after: "E"},
-	}
-	dependents := zeroPreqsSteps(reqs)
-	util.Equals(t, dependents, []string{"C", "G"})
-}
-
 func TestSilverOrder(t *testing.T) {
 	stepOrder := stepOrder(reqs())
 	util.Equals(t, stepOrder, []string{"C", "A", "B", "D", "F", "E"})
