@@ -8,10 +8,9 @@ import (
 )
 
 func react(input string) string {
-	runes := strings.Split(input, "")
-	var prevRune string
-	for i, r := range runes {
-		if prevRune != "" && strings.ToUpper(r) == strings.ToUpper(prevRune) && r != prevRune {
+	var prevRune rune
+	for i, r := range input {
+		if prevRune != 0 && r != prevRune && (r+32 == prevRune || r-32 == prevRune) {
 			// eliminate the offending bits
 			remainingRune := input[0:i-1] + input[i+1:]
 			return react(remainingRune)
