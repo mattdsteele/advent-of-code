@@ -46,12 +46,12 @@ func main() {
 	gold()
 }
 func silver() {
-	in := util.ReadFile("./day02/input.txt")[0]
+	in := util.ReadFile("./src/2/input.txt")[0]
 	fmt.Println(opcode(fixAlarm(parse(in), 12, 2))[0])
 }
 
 func gold() {
-	original := parse(util.ReadFile("./day02/input.txt")[0])
+	original := parse(util.ReadFile("./src/2/input.txt")[0])
 	for noun := 0; noun < 100; noun++ {
 		for verb := 0; verb < 100; verb++ {
 			copied := make([]int, len(original))

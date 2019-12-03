@@ -37,11 +37,11 @@ func main() {
 }
 
 func silver() {
-	sum := fuelSum(util.ReadFile("./day01/input.txt"))
+	sum := fuelSum(util.ReadFile("./src/1/input.txt"))
 	fmt.Println(sum)
 }
 func gold() {
-	ins := util.ReadFile("./day01/input.txt")
+	ins := util.ReadFile("./src/1/input.txt")
 	total := 0
 	for _, in := range ins {
 		f, _ := strconv.Atoi(in)

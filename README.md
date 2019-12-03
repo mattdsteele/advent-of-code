@@ -1,6 +1,6 @@
 # Advent of Code - 2019 - Golang Edition
 
-# Auto Answering
+## Auto Answering
 
 POST to `https://adventofcode/{year}/day/{day}/answer`
 
