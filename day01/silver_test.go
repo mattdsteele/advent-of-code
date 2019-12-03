@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	util "github.com/mattdsteele/advent-of-code"
+	test "github.com/mattdsteele/advent-of-code/testing"
 )
 
 type parse struct {
@@ -55,5 +56,5 @@ func TestFuelSum(t *testing.T) {
 14
 1969
 100756`))
-	util.Equals(t, 2+2+654+33583, f)
+	test.Equals(t, 2+2+654+33583, f)
 }

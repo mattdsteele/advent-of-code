@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	util "github.com/mattdsteele/advent-of-code"
+	util "github.com/mattdsteele/advent-of-code/testing"
 )
 
 func TestParse(t *testing.T) {
@@ -20,5 +20,5 @@ func TestOpcode(t *testing.T) {
 }
 
 func TestFixAlarm(t *testing.T) {
-	util.Assert(t, util.SlicesEqual([]int{1, 12, 2, 0, 99}, fixAlarm(parse("1,0,0,0,99"))), "values not equal")
+	util.Assert(t, util.SlicesEqual([]int{1, 12, 2, 0, 99}, fixAlarm(parse("1,0,0,0,99"), 12, 2)), "values not equal")
 }

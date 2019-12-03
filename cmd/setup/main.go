@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"path/filepath"
-	"time"
+
+	"github.com/mattdsteele/advent-of-code/aoc"
 )
 
 func main() {
@@ -33,31 +33,9 @@ func setupDay(day string, year string) {
 }
 
 func downloadInput(day string, year, inputPath string) {
-	cookie := os.Getenv("AOC_SESSION_COOKIE")
-	fmt.Println(cookie)
-	req, err := http.NewRequest("GET", "https://adventofcode.com/"+year+"/day/"+day+"/input", nil)
+	body, err := aoc.InputFor(year, day)
 	if err != nil {
 		log.Fatal("Error reading request. ", err)
-	}
-
-	sessionCookie := http.Cookie{Name: "session", Value: cookie}
-	req.AddCookie(&sessionCookie)
-
-	client := &http.Client{Timeout: time.Second * 10}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Fatal("Error reading response. ", err)
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal("Error reading body. ", err)
-	}
-	fmt.Printf("%s\n", body)
-	if resp.StatusCode != 200 {
-		panic("Non-OK response back from HTTP call")
 	}
 	writeToFile(body, inputPath)
 
