@@ -35,13 +35,35 @@ func opcode(input []int) []int {
 	return input
 }
 
-func fixAlarm(input []int) []int {
-	input[1] = 12
-	input[2] = 2
+func fixAlarm(input []int, firstVal, secondVal int) []int {
+	input[1] = firstVal
+	input[2] = secondVal
 	return input
 }
 
 func main() {
+	silver()
+	gold()
+}
+func silver() {
 	in := util.ReadFile("./day02/input.txt")[0]
-	fmt.Println(opcode(fixAlarm(parse(in)))[0])
+	fmt.Println(opcode(fixAlarm(parse(in), 12, 2))[0])
+}
+
+func gold() {
+	original := parse(util.ReadFile("./day02/input.txt")[0])
+	for noun := 0; noun < 100; noun++ {
+		for verb := 0; verb < 100; verb++ {
+			copied := make([]int, len(original))
+			copy(copied, original)
+			fixture := fixAlarm(copied, noun, verb)
+			res := opcode(fixture)
+			val := res[0]
+			if val == 19690720 {
+				caledVal := 100*noun + verb
+				fmt.Println(caledVal)
+				return
+			}
+		}
+	}
 }
