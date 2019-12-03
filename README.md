@@ -1,5 +1,7 @@
 # Advent of Code - 2019 - Golang Edition
 
+![shield](https://img.shields.io/endpoint?url=https%3A%2F%2Fus-central1-sandbox-254315.cloudfunctions.net%2FShields)
+
 ## Auto Answering
 
 POST to `https://adventofcode/{year}/day/{day}/answer`

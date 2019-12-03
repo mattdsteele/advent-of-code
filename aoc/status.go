@@ -33,7 +33,7 @@ func Stars() int {
 		panic("Failed")
 	}
 	withStars := doc.Find(".star-count").First().Text()
-	stars, _ := strconv.Atoi(strings.ReplaceAll(withStars, "*", ""))
+	stars, _ := strconv.Atoi(strings.Replace(withStars, "*", "", 1))
 	return stars
 }
 
