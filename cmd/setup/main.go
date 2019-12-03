@@ -57,7 +57,7 @@ func downloadInput(day string, year, inputPath string) {
 	}
 	fmt.Printf("%s\n", body)
 	if resp.StatusCode != 200 {
-		panic("Non-zero response back from HTTP call")
+		panic("Non-OK response back from HTTP call")
 	}
 	writeToFile(body, inputPath)
 

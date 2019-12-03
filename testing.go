@@ -36,5 +36,7 @@ func Equals(tb testing.TB, exp, act interface{}) {
 }
 
 func SlicesEqual(a, b interface{}) bool {
+	fmt.Println(a)
+	fmt.Println(b)
 	return reflect.DeepEqual(a, b)
 }
