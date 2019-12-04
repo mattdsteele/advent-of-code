@@ -25,5 +25,11 @@ func main() {
 	if answer == "" {
 		panic("Did not pass in an aswer")
 	}
-	aoc.Submit(year, day, level, answer)
+	correct, body := aoc.Submit(year, day, level, answer)
+	if correct {
+		fmt.Println("Correct")
+	} else {
+		fmt.Println("Incorrect")
+		fmt.Println(body)
+	}
 }

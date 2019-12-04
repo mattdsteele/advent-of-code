@@ -66,7 +66,7 @@ func CallWithCookie(req *http.Request) ([]byte, error) {
 	return body, err
 }
 
-func Submit(year, day, level, answer string) {
+func Submit(year, day, level, answer string) (bool, string) {
 	body := url.Values{}
 	body.Add("level", level)
 	body.Add("answer", answer)
@@ -79,5 +79,6 @@ func Submit(year, day, level, answer string) {
 	if err != nil {
 		log.Fatal("Failed to get val")
 	}
-	fmt.Println(string(res))
+	correct := strings.Contains(string(res), "That's the right answer!")
+	return correct, string(res)
 }
