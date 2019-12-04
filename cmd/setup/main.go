@@ -24,8 +24,7 @@ func main() {
 
 func setupDay(day string, year string) {
 	fmt.Printf("Setting up %s %s\n", day, year)
-	padded := fmt.Sprintf("%02s", day)
-	dayDir := filepath.Join("./", "day"+padded)
+	dayDir := filepath.Join("./", "src", day)
 	inputPath := filepath.Join(dayDir, "input.txt")
 	fmt.Println(inputPath)
 	os.MkdirAll(dayDir, os.ModePerm)
