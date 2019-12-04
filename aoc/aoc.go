@@ -2,9 +2,11 @@ package aoc
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -58,7 +60,24 @@ func CallWithCookie(req *http.Request) ([]byte, error) {
 		log.Fatal("Error reading body. ", err)
 	}
 	if resp.StatusCode != 200 {
+		fmt.Println(string(body))
 		panic("Non-OK response back from HTTP call")
 	}
 	return body, err
+}
+
+func Submit(year, day, level, answer string) {
+	body := url.Values{}
+	body.Add("level", level)
+	body.Add("answer", answer)
+	req, err := http.NewRequest("POST", "https://adventofcode.com/"+year+"/day/"+day+"/answer", strings.NewReader(body.Encode()))
+	if err != nil {
+		log.Fatal("Failed to generate request")
+	}
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	res, err := CallWithCookie(req)
+	if err != nil {
+		log.Fatal("Failed to get val")
+	}
+	fmt.Println(string(res))
 }
