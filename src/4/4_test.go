@@ -37,3 +37,14 @@ func TestRange(t *testing.T) {
 	numPassingInputs := passingSilverPasswords(silverInput)
 	tst.Equals(t, 2050, numPassingInputs)
 }
+
+func TestExactlyTwoRepeatingDigits(t *testing.T) {
+	fixture := new(exactlyTwoRepeatingDigits)
+	tst.Equals(t, true, fixture.passes("112233"))
+	tst.Equals(t, false, fixture.passes("111234"))
+	tst.Equals(t, false, fixture.passes("011134"))
+	tst.Equals(t, false, fixture.passes("011114"))
+	tst.Equals(t, true, fixture.passes("001114"))
+	tst.Equals(t, false, fixture.passes("123444"))
+	tst.Equals(t, true, fixture.passes("111122"))
+}

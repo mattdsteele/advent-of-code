@@ -4,6 +4,7 @@ require 'json'
 
 
 def status
+    puts "Checking submitted answers..."
     year = 2019
     user_id = 31777
     url = "https://adventofcode.com/#{year}/leaderboard/private/view/#{user_id}.json"
@@ -25,6 +26,7 @@ def completed_days input
 end
 
 def build
+    puts "Compiling all days..."
     `rm -rf bin/*`
     `go build -o bin ./src/*`
 end
