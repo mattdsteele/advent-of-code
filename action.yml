@@ -1,0 +1,15 @@
+name: Advent of Code
+author: mattdsteele
+description: Sync with Advent of Code
+inputs:
+  AOC_SESSION_COOKIE:
+    description: Session cookie
+    required: true
+  AOC_YEAR:
+    description: The Device ID of the Particle device
+    required: true
+using: docker
+image: Dockerfile
+branding:
+  icon: cloud
+  color: purple
