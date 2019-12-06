@@ -10,5 +10,4 @@ LABEL "homepage"="https://steele.blue"
 LABEL "maintainer"="Matt Steele <orphum@gmail.com>"
 
 RUN apt-get update && apt-get install -y ruby-full
-RUN cd $GITHUB_WORKSPACE
-ENTRYPOINT ["ruby" "./cmd/sync/sync.rb"]
+CMD cd $GITHUB_WORKSPACE && ruby ./cmd/sync/sync.rb
