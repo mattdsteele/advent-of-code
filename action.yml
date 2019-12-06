@@ -8,8 +8,9 @@ inputs:
   AOC_YEAR:
     description: The Device ID of the Particle device
     required: true
-using: docker
-image: Dockerfile
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
 branding:
   icon: cloud
   color: purple
