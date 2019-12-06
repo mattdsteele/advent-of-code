@@ -9,6 +9,6 @@ LABEL "repository"="http://github.com/mattdsteele-advent-of-code"
 LABEL "homepage"="https://steele.blue"
 LABEL "maintainer"="Matt Steele <orphum@gmail.com>"
 
-RUN apt-get install ruby
+RUN apt update && apt install ruby-full
 RUN cd $GITHUB_WORKSPACE
 ENTRYPOINT ["ruby" "./cmd/sync/sync.rb"]
