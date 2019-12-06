@@ -27,7 +27,8 @@ end
 
 def build
     puts "Compiling all days..."
-    `rm -rf bin/*`
+    `rm -rf bin`
+    `mkdir bin`
     `go build -o bin ./src/*`
 end
 
