@@ -84,6 +84,8 @@ build
 answered = answered_days
 answered_not_submitted = answered.select{|day| !completed.include? day}
 
+puts "#{answered_not_submitted.length} unsubmitted answers found"
+
 answered_not_submitted.each do |day|
     puts "Submitting new answer(s) for day #{day}"
     submit_day day, results
