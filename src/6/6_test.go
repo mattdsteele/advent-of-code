@@ -56,3 +56,28 @@ func TestExample(t *testing.T) {
 	sys.parseOrbit("K)L")
 	tst.Equals(t, 42, sys.orbitCount())
 }
+
+func TestHops(t *testing.T) {
+	sys := new(system)
+	sys.parseOrbit("COM)B")
+	sys.parseOrbit("B)C")
+	sys.parseOrbit("C)D")
+	sys.parseOrbit("D)E")
+	sys.parseOrbit("E)F")
+	sys.parseOrbit("B)G")
+	sys.parseOrbit("G)H")
+	sys.parseOrbit("D)I")
+	sys.parseOrbit("E)J")
+	sys.parseOrbit("J)K")
+	sys.parseOrbit("K)L")
+	sys.parseOrbit("K)YOU")
+	sys.parseOrbit("I)SAN")
+	tst.Equals(t, sys.find("K"), sys.youOrbiting())
+	tst.Equals(t, sys.find("I"), sys.sanOrbiting())
+	tst.Equals(t, sys.find("D"), sys.common(sys.youOrbiting(), sys.sanOrbiting()))
+
+	tst.Equals(t, 3, sys.hops(sys.youOrbiting(), sys.find("D")))
+	tst.Equals(t, 1, sys.hops(sys.sanOrbiting(), sys.find("D")))
+
+	tst.Equals(t, 4, goldTest(sys))
+}

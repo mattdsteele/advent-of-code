@@ -5,7 +5,7 @@ require 'json'
 
 def status
     puts "Checking submitted answers..."
-    year = 2019
+    year = ENV['AOC_YEAR']
     user_id = 31777
     url = "https://adventofcode.com/#{year}/leaderboard/private/view/#{user_id}.json"
 

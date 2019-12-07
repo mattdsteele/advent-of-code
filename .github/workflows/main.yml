@@ -1,4 +1,4 @@
-name: CI
+name: Advent of Code
 
 on: [push]
 
