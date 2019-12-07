@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	util "github.com/mattdsteele/advent-of-code"
 	"github.com/mattdsteele/advent-of-code/aoc"
 )
 
@@ -29,6 +30,20 @@ func setupDay(day string, year string) {
 	fmt.Println(inputPath)
 	os.MkdirAll(dayDir, os.ModePerm)
 	downloadInput(day, year, inputPath)
+	copyTemplateFiles(day)
+}
+
+func copyTemplateFiles(day string) {
+	templateDir := filepath.Join("./", "template")
+	destDir := filepath.Join("./", "src", day)
+	err := util.Copy(filepath.Join(templateDir, "code.go"), filepath.Join(destDir, "code.go"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = util.Copy(filepath.Join(templateDir, "test.go"), filepath.Join(destDir, fmt.Sprintf("%s_test.go", day)))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func downloadInput(day string, year, inputPath string) {
