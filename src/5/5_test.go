@@ -28,7 +28,7 @@ func TestRunSimple(t *testing.T) {
 }
 
 func TestTick(t *testing.T) {
-	p := make("3,0,4,5,99", "1")
+	p := make("3,0,104,5,99", "1")
 	p.tick()
 	tst.Equals(t, 2, p.position)
 	tst.Equals(t, "1", p.commands[0])
