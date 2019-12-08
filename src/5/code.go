@@ -23,16 +23,17 @@ type battlebot struct {
 	output   []string
 }
 
-func (b *battlebot) paramValue(i instruction, paramNumber int, val int) int {
+func (b *battlebot) paramValue(i instruction, paramNumber int, val string) int {
+	ival, _ := strconv.Atoi(val)
 	paramMode := 0 // position
 	if len(i.paramModes) > paramNumber {
 		paramMode = i.paramModes[paramNumber]
 	}
 	if paramMode == 0 {
-		v, _ := strconv.Atoi(b.commands[val])
+		v, _ := strconv.Atoi(b.commands[ival])
 		return v
 	}
-	return val
+	return ival
 }
 
 func (b *battlebot) tick() (done bool) {
@@ -42,11 +43,9 @@ func (b *battlebot) tick() (done bool) {
 	case 1:
 		{
 			ins := b.commands[b.position : b.position+4]
-			li, _ := strconv.Atoi(ins[1])
-			ri, _ := strconv.Atoi(ins[2])
+			l := b.paramValue(i, 0, ins[1])
+			r := b.paramValue(i, 1, ins[2])
 			target, _ := strconv.Atoi(ins[3])
-			l := b.paramValue(i, 0, li)
-			r := b.paramValue(i, 1, ri)
 			out := strconv.Itoa(l + r)
 			b.commands[target] = out
 			b.position += 4
@@ -54,11 +53,9 @@ func (b *battlebot) tick() (done bool) {
 	case 2:
 		{
 			ins := b.commands[b.position : b.position+4]
-			li, _ := strconv.Atoi(ins[1])
-			ri, _ := strconv.Atoi(ins[2])
+			l := b.paramValue(i, 0, ins[1])
+			r := b.paramValue(i, 1, ins[2])
 			target, _ := strconv.Atoi(ins[3])
-			l := b.paramValue(i, 0, li)
-			r := b.paramValue(i, 1, ri)
 			out := strconv.Itoa(l * r)
 			b.commands[target] = out
 			b.position += 4
@@ -72,10 +69,57 @@ func (b *battlebot) tick() (done bool) {
 		}
 	case 4:
 		{
-			newVal, _ := strconv.Atoi(b.commands[b.position+1])
-			code := b.paramValue(i, 0, newVal)
+			code := b.paramValue(i, 0, b.commands[b.position+1])
 			b.output = append(b.output, strconv.Itoa(code))
 			b.position += 2
+		}
+	case 5:
+		{
+			ins := b.commands[b.position : b.position+3]
+			check := b.paramValue(i, 0, ins[1])
+			if check != 0 {
+				jmpVal := b.paramValue(i, 1, ins[2])
+				b.position = jmpVal
+			} else {
+				b.position += 3
+			}
+		}
+	case 6:
+		{
+			ins := b.commands[b.position : b.position+3]
+			check := b.paramValue(i, 0, ins[1])
+			if check == 0 {
+				jmpVal := b.paramValue(i, 1, ins[2])
+				b.position = jmpVal
+			} else {
+				b.position += 3
+			}
+		}
+	case 7:
+		{
+			ins := b.commands[b.position : b.position+4]
+			l := b.paramValue(i, 0, ins[1])
+			r := b.paramValue(i, 1, ins[2])
+			target, _ := strconv.Atoi(ins[3])
+			storeVal := "0"
+			if l < r {
+				storeVal = "1"
+			}
+			b.commands[target] = storeVal
+			b.position += 4
+		}
+	case 8:
+		{
+			ins := b.commands[b.position : b.position+4]
+			l := b.paramValue(i, 0, ins[1])
+			r := b.paramValue(i, 1, ins[2])
+			target, _ := strconv.Atoi(ins[3])
+			storeVal := "0"
+			if l == r {
+				storeVal = "1"
+			}
+			b.commands[target] = storeVal
+			b.position += 4
 		}
 	case 99:
 		{
@@ -126,6 +170,10 @@ func make(input, opcode3 string) *battlebot {
 	return b
 }
 
+func (b *battlebot) runUntilDone() {
+	for !b.tick() {
+	}
+}
 func fixAlarm(input []int, firstVal, secondVal int) []int {
 	input[1] = firstVal
 	input[2] = secondVal
@@ -134,11 +182,18 @@ func fixAlarm(input []int, firstVal, secondVal int) []int {
 
 func main() {
 	silver()
+	gold()
 }
 func silver() {
 	in := util.ReadFile("./src/5/input.txt")[0]
 	bot := make(in, "1")
-	for !bot.tick() {
-	}
+	bot.runUntilDone()
+	fmt.Println(bot.output[len(bot.output)-1])
+}
+
+func gold() {
+	in := util.ReadFile("./src/5/input.txt")[0]
+	bot := make(in, "5")
+	bot.runUntilDone()
 	fmt.Println(bot.output[len(bot.output)-1])
 }
