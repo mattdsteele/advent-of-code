@@ -26,3 +26,9 @@ func TestLeastWith(t *testing.T) {
 	tst.Equals(t, img.layers[1], img.leastWith("2"))
 	tst.Equals(t, img.layers[0], img.leastWith("3"))
 }
+
+func TestDecodeImage(t *testing.T) {
+	data := "0222112222120000"
+	img := make(2, 2, data)
+	tst.Equals(t, strings.Split("0110", ""), img.decode())
+}
