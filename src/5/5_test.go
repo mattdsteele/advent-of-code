@@ -35,9 +35,22 @@ func TestTick(t *testing.T) {
 
 	p.tick()
 	tst.Equals(t, 4, p.position)
-	tst.Equals(t, "5", p.output)
+	tst.Equals(t, []string{"5"}, p.output)
 
 	p.tick()
+	tst.Equals(t, 4, p.position)
+}
+
+func TestSample(t *testing.T) {
+	p := make("1002,4,3,4,33", "1")
+	p.tick()
+	tst.Equals(t, "99", p.commands[4])
+	tst.Equals(t, []string{"1002", "4", "3", "4", "99"}, p.commands)
+}
+func TestAnother(t *testing.T) {
+	p := make("1001,4,3,4,33", "1")
+	p.tick()
+	tst.Equals(t, "36", p.commands[4])
 	tst.Equals(t, 4, p.position)
 }
 
@@ -45,4 +58,5 @@ func TestNegative(t *testing.T) {
 	p := make("1101,100,-1,4,0", "1")
 	p.tick()
 	tst.Equals(t, "99", p.commands[4])
+	tst.Equals(t, 4, p.position)
 }

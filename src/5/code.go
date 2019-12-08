@@ -20,7 +20,7 @@ type battlebot struct {
 	commands []string
 	position int
 	opcode3  string
-	output   string
+	output   []string
 }
 
 func (b *battlebot) paramValue(i instruction, paramNumber int, val int) int {
@@ -35,7 +35,7 @@ func (b *battlebot) paramValue(i instruction, paramNumber int, val int) int {
 	return val
 }
 
-func (b *battlebot) tick() {
+func (b *battlebot) tick() (done bool) {
 	p := b.commands[b.position]
 	i := parseInstruction(p)
 	switch i.opcode {
@@ -72,18 +72,17 @@ func (b *battlebot) tick() {
 		}
 	case 4:
 		{
-			newVal := b.commands[b.position+1]
-			b.output = newVal
+			newVal, _ := strconv.Atoi(b.commands[b.position+1])
+			code := b.paramValue(i, 0, newVal)
+			b.output = append(b.output, strconv.Itoa(code))
 			b.position += 2
-			if newVal != "0" {
-				return
-			}
 		}
 	case 99:
 		{
-			return
+			done = true
 		}
 	}
+	return done
 }
 
 type instruction struct {
@@ -139,9 +138,7 @@ func main() {
 func silver() {
 	in := util.ReadFile("./src/5/input.txt")[0]
 	bot := make(in, "1")
-	bot.output = "0"
-	for bot.output == "0" {
-		bot.tick()
+	for !bot.tick() {
 	}
-	fmt.Println(bot.output)
+	fmt.Println(bot.output[len(bot.output)-1])
 }
