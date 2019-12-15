@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"testing"
 
 	tst "github.com/mattdsteele/advent-of-code/testing"
@@ -24,11 +25,11 @@ func TestDegrees(t *testing.T) {
 	d := asteroid{0, 0}
 	e := asteroid{-1, 0}
 	f := asteroid{0, -1}
-	tst.Equals(t, float64(0), d.bearing(c))
-	tst.Equals(t, float64(45), d.bearing(b))
+	tst.Equals(t, float64(180), d.bearing(c))
+	tst.Equals(t, float64(135), d.bearing(b))
 	tst.Equals(t, float64(90), d.bearing(a))
 	tst.Equals(t, float64(270), d.bearing(e))
-	tst.Equals(t, float64(180), d.bearing(f))
+	tst.Equals(t, float64(0), d.bearing(f))
 }
 
 func TestAsteroidsVisible(t *testing.T) {
@@ -89,4 +90,77 @@ func TestMoreExamples(t *testing.T) {
 		tst.Equals(t, a.x, fixture.x)
 		tst.Equals(t, a.y, fixture.y)
 	}
+}
+
+func astAt(f *field, x, y int) asteroid {
+	for _, a := range f.asteroids {
+		if a.x == x && a.y == y {
+			return a
+		}
+	}
+	panic("failed")
+}
+
+func TestDistance(t *testing.T) {
+	a := asteroid{0, 0}
+	b := asteroid{1, 1}
+	c := asteroid{0, 1}
+	tst.Equals(t, float64(1), a.distance(c))
+	tst.Equals(t, float64(1), c.distance(a))
+	tst.Equals(t, math.Sqrt(2), a.distance(b))
+}
+func TestDataStructure(t *testing.T) {
+	fld := `.#....#####...#..
+##...##.#####..##
+##...#...#.#####.
+..#.....#...###..
+..#.#.....#....##`
+	f := parse(fld)
+	a := astAt(f, 8, 3)
+	entries := f.bearingMappings(a)
+	tst.Assert(t, entries != nil, "should exist")
+	zeros := entries[float64(0)]
+	tst.Equals(t, 2, len(zeros))
+}
+
+func TestBearingsDistance(t *testing.T) {
+	fld := `.#....#####...#..
+##...##.#####..##
+##...#...#.#####.
+..#.....#...###..
+..#.#.....#....##`
+	f := parse(fld)
+	a := astAt(f, 8, 3)
+	entries := f.bearingMappings(a)
+	sorted := sortMappings(entries, a)
+	tst.Equals(t, astAt(f, 8, 1), sorted[0][0])
+	tst.Equals(t, astAt(f, 9, 0), sorted[1][0])
+}
+
+func TestXthVaporized(t *testing.T) {
+	fld := `.#..##.###...#######
+##.############..##.
+.#.######.########.#
+.###.#######.####.#.
+#####.##.#.##.###.##
+..#####..#.#########
+####################
+#.####....###.#.#.##
+##.#################
+#####.##.###..####..
+..######..##.#######
+####.##.####...##..#
+.#####..#.######.###
+##...#.##########...
+#.##########.#######
+.####.#.###.###.#.##
+....##.##.###..#####
+.#.#.###########.###
+#.#.#.#####.####.###
+###.##.####.##.#..##`
+	f := parse(fld)
+	a := astAt(f, 11, 13)
+	tst.Equals(t, astAt(f, 11, 12), f.vaporized(a, 1))
+	tst.Equals(t, astAt(f, 10, 16), f.vaporized(a, 100))
+	tst.Equals(t, astAt(f, 11, 1), f.vaporized(a, 299))
 }
