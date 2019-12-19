@@ -17,8 +17,21 @@ type moon struct {
 	dz int
 }
 
+func (m *moon) toString() string {
+	return fmt.Sprintf("%d,%d,%d,%d,%d,%d", m.x, m.y, m.z, m.dx, m.dy, m.dz)
+}
+
 type system struct {
-	moons []*moon
+	moons   []*moon
+	history map[string]bool
+}
+
+func (s *system) toString() string {
+	st := ""
+	for _, m := range s.moons {
+		st += m.toString()
+	}
+	return st
 }
 
 func abs(i int) int {
@@ -52,7 +65,21 @@ func (s *system) run(times int) {
 	}
 }
 
-func (s *system) tick() {
+func (s *system) repeats() int64 {
+	i := int64(0)
+	for {
+		i++
+		repeated := s.tick()
+		if repeated {
+			return i
+		}
+	}
+}
+func (s *system) tick() bool {
+	if s.history == nil {
+		s.history = make(map[string]bool)
+		s.history[s.toString()] = true
+	}
 	for _, m := range s.moons {
 		for _, o := range s.moons {
 			if m != o {
@@ -63,6 +90,12 @@ func (s *system) tick() {
 	for _, m := range s.moons {
 		m.velocity()
 	}
+	hash := s.toString()
+	if _, ok := s.history[hash]; ok {
+		return true
+	}
+	s.history[hash] = true
+	return false
 }
 
 func (m *moon) velocity() {
@@ -103,6 +136,7 @@ func parse(line string) *moon {
 
 func main() {
 	silver()
+	gold()
 }
 
 func silver() {
@@ -113,4 +147,12 @@ func silver() {
 	}
 	s.run(1000)
 	fmt.Println(s.energy())
+}
+func gold() {
+	s := system{}
+	lines := util.ReadFile("./src/12/input.txt")
+	for _, l := range lines {
+		s.add(parse(l))
+	}
+	fmt.Println(s.repeats())
 }

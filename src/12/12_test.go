@@ -69,3 +69,21 @@ func TestAnotherExample(t *testing.T) {
 	s.run(100)
 	tst.Equals(t, 1940, s.energy())
 }
+
+func TestSystemRepeats(t *testing.T) {
+	s := system{}
+	s.add(parse("<x=-1, y=0, z=2>"))
+	s.add(parse("<x=2, y=-10, z=-7>"))
+	s.add(parse("<x=4, y=-8, z=8>"))
+	s.add(parse("<x=3, y=5, z=-1>"))
+	tst.Equals(t, int64(2772), s.repeats())
+}
+
+func testSystemRepeatsLongTime(t *testing.T) {
+	s := system{}
+	s.add(parse("<x=-8, y=-10, z=0>"))
+	s.add(parse("<x=5, y=5, z=10>"))
+	s.add(parse("<x=2, y=-7, z=3>"))
+	s.add(parse("<x=9, y=-8, z=-3>"))
+	tst.Equals(t, int64(4686774924), s.repeats())
+}
