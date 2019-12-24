@@ -9,12 +9,18 @@ import (
 )
 
 type moon struct {
-	x  int
-	y  int
-	z  int
-	dx int
-	dy int
-	dz int
+	x       int
+	y       int
+	z       int
+	dx      int
+	dy      int
+	dz      int
+	startX  int
+	startY  int
+	startZ  int
+	startDX int
+	startDY int
+	startDZ int
 }
 
 func (m *moon) toString() string {
@@ -23,7 +29,9 @@ func (m *moon) toString() string {
 
 type system struct {
 	moons   []*moon
-	history map[string]bool
+	repeatX int64
+	repeatY int64
+	repeatZ int64
 }
 
 func (s *system) toString() string {
@@ -57,29 +65,46 @@ func (s *system) add(m *moon) {
 	s.moons = append(s.moons, m)
 }
 
+func (s *system) setInitial() {
+	for _, m := range s.moons {
+		m.startX = m.x
+		m.startY = m.y
+		m.startZ = m.z
+		m.startDX = m.dx
+		m.startDY = m.dy
+		m.startDZ = m.dz
+	}
+}
+
 func (s *system) run(times int) {
+	s.setInitial()
 	i := 0
 	for i < times {
-		s.tick()
+		s.tick(int64(i))
 		i++
 	}
 }
 
 func (s *system) repeats() int64 {
+	s.setInitial()
 	i := int64(0)
 	for {
 		i++
-		repeated := s.tick()
-		if repeated {
-			return i
+		if s.tick(i) {
+			return s.lcm()
 		}
 	}
 }
-func (s *system) tick() bool {
-	if s.history == nil {
-		s.history = make(map[string]bool)
-		s.history[s.toString()] = true
-	}
+
+func (s *system) lcm() int64 {
+	l := int64(1)
+	l = lcm(l, s.repeatX)
+	l = lcm(l, s.repeatY)
+	l = lcm(l, s.repeatZ)
+	return l
+}
+
+func (s *system) tick(step int64) bool {
 	for _, m := range s.moons {
 		for _, o := range s.moons {
 			if m != o {
@@ -90,11 +115,49 @@ func (s *system) tick() bool {
 	for _, m := range s.moons {
 		m.velocity()
 	}
-	hash := s.toString()
-	if _, ok := s.history[hash]; ok {
+	s.checkLoop(step)
+	return s.allLooped()
+}
+func (s *system) checkLoop(step int64) {
+	if s.repeatX == int64(0) && s.checkX() {
+		s.repeatX = step
+	}
+	if s.repeatY == int64(0) && s.checkY() {
+		s.repeatY = step
+	}
+	if s.repeatZ == int64(0) && s.checkZ() {
+		s.repeatZ = step
+	}
+
+}
+func (s *system) checkX() bool {
+	for _, m := range s.moons {
+		if m.startX != m.x || m.startDX != m.dx {
+			return false
+		}
+	}
+	return true
+}
+func (s *system) checkY() bool {
+	for _, m := range s.moons {
+		if m.startY != m.y || m.startDY != m.dy {
+			return false
+		}
+	}
+	return true
+}
+func (s *system) checkZ() bool {
+	for _, m := range s.moons {
+		if m.startZ != m.z || m.startDZ != m.dz {
+			return false
+		}
+	}
+	return true
+}
+func (s *system) allLooped() bool {
+	if s.repeatX != int64(0) && s.repeatY != int64(0) && s.repeatZ != int64(0) {
 		return true
 	}
-	s.history[hash] = true
 	return false
 }
 
@@ -155,4 +218,19 @@ func gold() {
 		s.add(parse(l))
 	}
 	fmt.Println(s.repeats())
+}
+
+// greatest common divisor (gcd) via Euclidean algorithm
+func gcd(a, b int64) int64 {
+	for b != int64(0) {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}
+
+// find Least Common Multiple (lcm) via GCD
+func lcm(a, b int64) int64 {
+	return a * b / gcd(a, b)
 }

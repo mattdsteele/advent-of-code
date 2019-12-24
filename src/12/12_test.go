@@ -21,7 +21,7 @@ func TestParse(t *testing.T) {
 }
 
 func TestVelocity(t *testing.T) {
-	m := moon{1, 1, 1, 2, 3, 4}
+	m := moon{1, 1, 1, 2, 3, 4, 0, 0, 0, 0, 0, 0}
 	m.velocity()
 	tst.Equals(t, 3, m.x)
 }
@@ -41,7 +41,7 @@ func TestTick(t *testing.T) {
 	s.add(parse("<x=2, y=-10, z=-7>"))
 	s.add(parse("<x=4, y=-8, z=8>"))
 	s.add(parse("<x=3, y=5, z=-1>"))
-	s.tick()
+	s.tick(int64(5))
 	m0 := s.moons[0]
 	tst.Equals(t, 2, m0.x)
 	tst.Equals(t, -1, m0.y)
@@ -79,7 +79,7 @@ func TestSystemRepeats(t *testing.T) {
 	tst.Equals(t, int64(2772), s.repeats())
 }
 
-func testSystemRepeatsLongTime(t *testing.T) {
+func TestSystemRepeatsLongTime(t *testing.T) {
 	s := system{}
 	s.add(parse("<x=-8, y=-10, z=0>"))
 	s.add(parse("<x=5, y=5, z=10>"))
