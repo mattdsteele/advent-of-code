@@ -31,10 +31,11 @@ func parseReqs(in string) *system {
 	return &s
 }
 
-func (s *system) oreCost() int {
+func (s *system) oreCost(numFuel int) int {
 	fuelVal := s.chemical("FUEL")
 	distanceLevel := s.distanceFromOre("FUEL")
-	bonds := []*bond{fuelVal.target}
+	neededFuel := bond{numFuel, fuelVal.target.chemical}
+	bonds := []*bond{&neededFuel}
 	for distanceLevel > 0 {
 		bonds = s.depsAtLevel(bonds, distanceLevel)
 		distanceLevel--
@@ -43,6 +44,22 @@ func (s *system) oreCost() int {
 		panic(fmt.Sprintf("too many bonds found: %+v", bonds))
 	}
 	return bonds[0].amount
+}
+
+func (s *system) trillionOre() int {
+	trillion := 1000000000000
+	start := 1
+	end := 100000000000
+	for start <= end {
+		mid := (start + end) / 2
+		fuel := s.oreCost(mid)
+		if fuel < trillion {
+			start = mid + 1
+		} else {
+			end = mid - 1
+		}
+	}
+	return end
 }
 
 func (s *system) convert(b *bond) (converted []*bond) {
@@ -139,10 +156,17 @@ func parseLine(in string) *pairing {
 }
 func main() {
 	silver()
+	gold()
 }
 
 func silver() {
 	lines := util.ReadFile("./src/14/input.txt")
 	s := parseReqs(strings.Join(lines, "\n"))
-	fmt.Println(s.oreCost())
+	fmt.Println(s.oreCost(1))
+}
+
+func gold() {
+	lines := util.ReadFile("./src/14/input.txt")
+	s := parseReqs(strings.Join(lines, "\n"))
+	fmt.Println(s.trillionOre())
 }
