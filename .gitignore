@@ -2,3 +2,4 @@
 *.png
 *.local*
 bin
+.env
