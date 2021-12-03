@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - uses: ./
+      - uses: mattdsteele/aoc-submit-action@main
         name: Advent Of Code
         env:
           AOC_SESSION_COOKIE: ${{ secrets.AOC_SESSION_COOKIE }}
