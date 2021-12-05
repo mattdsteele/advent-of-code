@@ -18,6 +18,24 @@ func silver() {
 	fmt.Println(silverData(lines))
 }
 
+func goldData(sampleData []string) int {
+	var horizontal, vertical, aim int
+	for _, step := range sampleData {
+		direction, amt := parseLine(step)
+		switch direction {
+		case "forward":
+			horizontal += amt
+			depthDelta := amt * aim
+			vertical += depthDelta
+		case "up":
+			aim -= amt
+		case "down":
+			aim += amt
+		}
+	}
+	return horizontal * vertical
+}
+
 func silverData(sampleData []string) int {
 	var horizontal, vertical int
 	for _, step := range sampleData {
@@ -42,5 +60,6 @@ func parseLine(line string) (direction string, value int) {
 }
 
 func gold() {
-	// Print gold result
+	lines := util.ReadFile("src/2/input.txt")
+	fmt.Println(goldData(lines))
 }

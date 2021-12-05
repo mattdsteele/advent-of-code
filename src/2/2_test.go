@@ -12,6 +12,11 @@ func TestParse(t *testing.T) {
 	tst.Equals(t, 150, silverData(sampleData))
 }
 
+func TestGoldData(t *testing.T) {
+	sampleData := util.SliceAtLine(exampleData())
+	tst.Equals(t, 900, goldData(sampleData))
+}
+
 func TestParseLine(t *testing.T) {
 	dir, amt := parseLine("forward 5")
 	tst.Equals(t, "forward", dir)
