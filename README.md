@@ -11,3 +11,8 @@ In the `cmd/` folder are the following utilities:
 `submit/` - Submits an answer
 
 `sync/` - Identifies any answers not submitted successfully, and submits each in turn
+
+### Automation
+
+* Submits entries to AOC via https://github.com/mattdsteele/aoc-submit-action
+* Stars via https://github.com/mattdsteele/aoc-stars-shield
