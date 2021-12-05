@@ -1,18 +1,14 @@
 package aoc
 
 import (
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
-	"strconv"
 	"strings"
 	"time"
-
-	"github.com/PuerkitoBio/goquery"
 )
 
 func InputFor(year, day string) ([]byte, error) {
@@ -21,22 +17,6 @@ func InputFor(year, day string) ([]byte, error) {
 		log.Fatal("Error reading request. ", err)
 	}
 	return CallWithCookie(req)
-}
-func Stars() int {
-	req, _ := http.NewRequest("GET", "https://adventofcode.com", nil)
-	res, err := CallWithCookie(req)
-	if err != nil {
-		log.Fatal("Error calling for stars")
-		panic("Failed")
-	}
-	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(res))
-	if err != nil {
-		log.Fatal("Error parsing document")
-		panic("Failed")
-	}
-	withStars := doc.Find(".star-count").First().Text()
-	stars, _ := strconv.Atoi(strings.Replace(withStars, "*", "", 1))
-	return stars
 }
 
 func CallWithCookie(req *http.Request) ([]byte, error) {
