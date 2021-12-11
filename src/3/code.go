@@ -36,6 +36,43 @@ func epsilonRate(lines []string) int {
 	return int(intVal)
 }
 
+func oxygenStep(lines []string, idx int) (remainingStrings []string) {
+	zeroCount, oneCount := 0, 0
+	var elToKeep string
+	for _, line := range lines {
+		el := line[idx : idx+1]
+		if el == "0" {
+			zeroCount++
+		} else {
+			oneCount++
+		}
+	}
+	if zeroCount > oneCount {
+		elToKeep = "0"
+	} else {
+		elToKeep = "1"
+	}
+	for _, line := range lines {
+		if elToKeep == line[idx:idx+1] {
+			remainingStrings = append(remainingStrings, line)
+		}
+	}
+
+	return remainingStrings
+}
+
+func oxygenRating(lines []string) int {
+	var remainingLines []string
+	for i := 0; ; i++ {
+		remainingLines = oxygenStep(lines, i)
+		if len(remainingLines) == 1 {
+			intVal, _ := strconv.ParseInt(remainingLines[0], 2, 64)
+			return int(intVal)
+		}
+		lines = remainingLines
+	}
+}
+
 func getBits(lines []string, i int, s string) (total int) {
 	for _, line := range lines {
 		if line[i:i+1] == s {
