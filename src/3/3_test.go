@@ -33,6 +33,13 @@ func TestSample(t *testing.T) {
 func TestOxygenRating(t *testing.T) {
 	tst.Equals(t, 23, oxygenRating(lines))
 }
+func TestCo2Rating(t *testing.T) {
+	tst.Equals(t, 10, co2Rating(lines))
+}
+
+func TestGold(t *testing.T) {
+	tst.Equals(t, 230, goldResult(lines))
+}
 
 func TestOxygenStep(t *testing.T) {
 	nextStep := []string{"11110", "10110", "10111", "10101", "11100", "10000", "11001"}
@@ -41,5 +48,9 @@ func TestOxygenStep(t *testing.T) {
 	tst.Equals(t, next, oxygenStep(nextStep, 1))
 	next3 := []string{"10110", "10111", "10101"}
 	tst.Equals(t, next3, oxygenStep(next, 2))
+}
 
+func TestCo2Step(t *testing.T) {
+	nextStep := []string{"00100", "01111", "00111", "00010", "01010"}
+	tst.Equals(t, nextStep, co2Step(lines, 0))
 }

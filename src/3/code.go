@@ -36,7 +36,56 @@ func epsilonRate(lines []string) int {
 	return int(intVal)
 }
 
-func oxygenStep(lines []string, idx int) (remainingStrings []string) {
+func co2Step(lines []string, i int) (nextLines []string) {
+	strat := func(zeroCount, oneCount int) string {
+		if oneCount >= zeroCount {
+			return "0"
+		} else {
+			return "1"
+		}
+	}
+	return getRemainingStrings(lines, i, strat)
+}
+
+type elToKeep func(zeroCount, oneCount int) string
+
+func goldResult(lines []string) int {
+	return co2Rating(lines) * oxygenRating(lines)
+}
+
+type step func(lines []string, index int) []string
+
+func rating(lines []string, step step) int {
+	var remainingLines []string
+	for i := 0; ; i++ {
+		remainingLines = step(lines, i)
+		if len(remainingLines) == 1 {
+			intVal, _ := strconv.ParseInt(remainingLines[0], 2, 64)
+			return int(intVal)
+		}
+		lines = remainingLines
+	}
+}
+func co2Rating(lines []string) int {
+	return rating(lines, co2Step)
+}
+
+func oxygenRating(lines []string) int {
+	return rating(lines, oxygenStep)
+}
+
+func oxygenStep(lines []string, idx int) []string {
+	strat := func(zeroCount, oneCount int) string {
+		if zeroCount > oneCount {
+			return "0"
+		} else {
+			return "1"
+		}
+	}
+	return getRemainingStrings(lines, idx, strat)
+}
+
+func getRemainingStrings(lines []string, idx int, elToKeepStrategy elToKeep) (remainingStrings []string) {
 	zeroCount, oneCount := 0, 0
 	var elToKeep string
 	for _, line := range lines {
@@ -47,11 +96,7 @@ func oxygenStep(lines []string, idx int) (remainingStrings []string) {
 			oneCount++
 		}
 	}
-	if zeroCount > oneCount {
-		elToKeep = "0"
-	} else {
-		elToKeep = "1"
-	}
+	elToKeep = elToKeepStrategy(zeroCount, oneCount)
 	for _, line := range lines {
 		if elToKeep == line[idx:idx+1] {
 			remainingStrings = append(remainingStrings, line)
@@ -59,18 +104,6 @@ func oxygenStep(lines []string, idx int) (remainingStrings []string) {
 	}
 
 	return remainingStrings
-}
-
-func oxygenRating(lines []string) int {
-	var remainingLines []string
-	for i := 0; ; i++ {
-		remainingLines = oxygenStep(lines, i)
-		if len(remainingLines) == 1 {
-			intVal, _ := strconv.ParseInt(remainingLines[0], 2, 64)
-			return int(intVal)
-		}
-		lines = remainingLines
-	}
 }
 
 func getBits(lines []string, i int, s string) (total int) {
@@ -99,5 +132,5 @@ func gammaRate(lines []string) int {
 }
 
 func gold() {
-	// Print gold result
+	fmt.Println(goldResult(util.ReadFile("./src/3/input.txt")))
 }
