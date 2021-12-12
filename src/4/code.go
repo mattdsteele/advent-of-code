@@ -20,7 +20,8 @@ func silver() {
 }
 
 func gold() {
-	// Print gold result
+	file := util.ReadFile("src/4/input.txt")
+	fmt.Println(parse(file).gold())
 }
 
 type board struct {
@@ -90,19 +91,53 @@ type game struct {
 }
 
 func (g game) silver() int {
+	return g.playGame(func() *board {
+		for _, b := range g.boards {
+			if b.solved() {
+				return b
+			}
+		}
+		return nil
+	})
+}
+
+func (g game) playGame(winningStrat winningBoard) int {
 	for _, draw := range g.draws {
 		for _, b := range g.boards {
 			b.mark(draw)
 		}
 
-		for _, b := range g.boards {
-			if b.solved() {
-				return b.score(draw)
-			}
+		winningBoard := winningStrat()
+		if winningBoard != nil {
+			return winningBoard.score(draw)
 		}
 	}
 	panic("not solved")
+
 }
+
+func (g game) gold() int {
+	var finalBoard *board
+	return g.playGame(func() *board {
+		losingBoards := make([]*board, 0)
+		for _, b := range g.boards {
+			if !b.solved() {
+				losingBoards = append(losingBoards, b)
+			}
+		}
+		if len(losingBoards) == 1 {
+			finalBoard = losingBoards[0]
+		}
+
+		if finalBoard != nil && finalBoard.solved() {
+			return finalBoard
+		}
+
+		return nil
+	})
+}
+
+type winningBoard func() *board
 
 func parse(lines []string) *game {
 	g := new(game)
