@@ -23,6 +23,45 @@ func gold() {
 type board struct {
 	rows []*row
 }
+
+func (b board) mark(draw int) {
+	for _, r := range b.rows {
+		for _, e := range r.cols {
+			if e.value == draw {
+				e.selected = true
+			}
+		}
+	}
+}
+func (b board) solved() bool {
+	// horizontal first
+	for _, r := range b.rows {
+		anyFalseValues := false
+		for _, e := range r.cols {
+			if !e.selected {
+				anyFalseValues = true
+			}
+		}
+		if !anyFalseValues {
+			return true
+		}
+	}
+
+	// vertical
+	for i := 0; i < 5; i++ {
+		anyFalseValues := false
+		for _, e := range b.rows {
+			if !e.cols[i].selected {
+				anyFalseValues = true
+			}
+		}
+		if !anyFalseValues {
+			return true
+		}
+	}
+	return false
+}
+
 type row struct {
 	cols []*entry
 }

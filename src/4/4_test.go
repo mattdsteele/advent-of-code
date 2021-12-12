@@ -39,3 +39,41 @@ func TestParse(t *testing.T) {
 	tst.Equals(t, 22, board.rows[0].cols[0].value)
 	tst.Equals(t, false, board.rows[0].cols[0].selected)
 }
+
+func TestMark(t *testing.T) {
+	game := parse(lines)
+	board := game.boards[0]
+	board.mark(23)
+	tst.Equals(t, true, board.rows[1].cols[2].selected)
+	tst.Equals(t, false, board.rows[1].cols[3].selected)
+}
+
+func TestBingo(t *testing.T) {
+	game := parse(lines)
+	board := game.boards[0]
+	board.mark(0)
+	board.mark(11)
+	board.mark(17)
+	board.mark(13)
+	board.mark(15)
+	tst.Equals(t, false, board.solved())
+	board.mark(22)
+	tst.Equals(t, true, board.solved())
+}
+
+func TestBingoVertical(t *testing.T) {
+	game := parse(lines)
+	board := game.boards[0]
+	// 22 13 17 11  0
+	//  8  2 23  4 24
+	// 21  9 14 16  7
+	//  6 10  3 18  5
+	//  1 12 20 15 19
+	board.mark(11)
+	board.mark(4)
+	board.mark(16)
+	board.mark(18)
+	tst.Equals(t, false, board.solved())
+	board.mark(15)
+	tst.Equals(t, true, board.solved())
+}
