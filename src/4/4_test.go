@@ -77,3 +77,8 @@ func TestBingoVertical(t *testing.T) {
 	board.mark(15)
 	tst.Equals(t, true, board.solved())
 }
+
+func TestGame(t *testing.T) {
+	game := parse(lines)
+	tst.Equals(t, 4512, game.silver())
+}

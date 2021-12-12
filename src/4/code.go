@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	util "github.com/mattdsteele/advent-of-code"
 )
 
 func main() {
@@ -12,7 +14,8 @@ func main() {
 }
 
 func silver() {
-	fmt.Println("Silver result")
+	file := util.ReadFile("src/4/input.txt")
+	fmt.Println(parse(file).silver())
 
 }
 
@@ -61,6 +64,17 @@ func (b board) solved() bool {
 	}
 	return false
 }
+func (b board) score(calledNumber int) int {
+	var uncounted int
+	for _, row := range b.rows {
+		for _, col := range row.cols {
+			if !col.selected {
+				uncounted += col.value
+			}
+		}
+	}
+	return uncounted * calledNumber
+}
 
 type row struct {
 	cols []*entry
@@ -73,6 +87,21 @@ type entry struct {
 type game struct {
 	draws  []int
 	boards []*board
+}
+
+func (g game) silver() int {
+	for _, draw := range g.draws {
+		for _, b := range g.boards {
+			b.mark(draw)
+		}
+
+		for _, b := range g.boards {
+			if b.solved() {
+				return b.score(draw)
+			}
+		}
+	}
+	panic("not solved")
 }
 
 func parse(lines []string) *game {
