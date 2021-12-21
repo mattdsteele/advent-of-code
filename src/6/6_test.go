@@ -33,3 +33,7 @@ func Test80Days(t *testing.T) {
 	game.playRounds(80)
 	tst.Equals(t, 5934, game.fishCount())
 }
+func Test256(t *testing.T) {
+	game.playRounds(256)
+	tst.Equals(t, 26984457539, game.fishCount())
+}

@@ -21,7 +21,10 @@ func silver() {
 }
 
 func gold() {
-	// Print gold result
+	line := util.ReadFile("./src/6/input.txt")[0]
+	g := parse(line)
+	g.playRounds(256)
+	fmt.Print(g.fishCount())
 }
 
 type Game struct {
