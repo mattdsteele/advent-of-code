@@ -19,7 +19,8 @@ func silver() {
 }
 
 func gold() {
-	// Print gold result
+	line := util.ReadFile("./src/7/input.txt")[0]
+	fmt.Println(parse(line).bestGoldFuelCost())
 }
 
 type Game struct {
@@ -44,24 +45,39 @@ func (g *Game) max() (maxValue int) {
 	return maxValue
 }
 
-func (g *Game) fuelCost(level int) (totalFuel int) {
+func (g *Game) fuelCost(level int, strat fuelStrat) (totalFuel int) {
 	for _, c := range g.crabPositions {
-		totalFuel += fuel(level, c)
+		totalFuel += strat(level, c)
 	}
 	return totalFuel
 }
 
 func (g *Game) bestFuelCost() int {
+	return g.bfc(fuel)
+}
+
+func (g *Game) bfc(strat fuelStrat) int {
 	bestFuel := -1
 	min := g.min()
 	max := g.max()
 	for i := min; i < max; i++ {
-		fc := g.fuelCost(i)
+		fc := g.fuelCost(i, strat)
 		if bestFuel < 0 || fc < bestFuel {
 			bestFuel = fc
 		}
 	}
 	return bestFuel
+}
+
+func (g *Game) bestGoldFuelCost() int {
+	return g.bfc(goldFuelStrat)
+}
+
+type fuelStrat func(from, to int) int
+
+func goldFuelStrat(from, to int) int {
+	distance := fuel(from, to)
+	return ((distance * distance) + distance) / 2
 }
 
 func fuel(from, to int) int {
@@ -80,5 +96,4 @@ func parse(input string) *Game {
 		g.crabPositions = append(g.crabPositions, i)
 	}
 	return &g
-
 }
