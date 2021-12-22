@@ -17,47 +17,54 @@ func silver() {
 	line := util.ReadFile("./src/6/input.txt")[0]
 	g := parse(line)
 	g.playRounds(80)
-	fmt.Print(g.fishCount())
+	fmt.Println(g.fishCount())
 }
 
 func gold() {
 	line := util.ReadFile("./src/6/input.txt")[0]
 	g := parse(line)
 	g.playRounds(256)
-	fmt.Print(g.fishCount())
+	fmt.Println(g.fishCount())
 }
 
 type Game struct {
-	rounds int
-	fishes []int
+	rounds           int
+	fishCountPerItem map[int]int
 }
 
 func parse(initialState string) *Game {
 	strStates := strings.Split(initialState, ",")
 	g := new(Game)
-	g.fishes = make([]int, 0)
+	g.fishCountPerItem = make(map[int]int)
 
 	for _, s := range strStates {
 		i, _ := strconv.Atoi(s)
-		g.fishes = append(g.fishes, i)
+		g.fishCountPerItem[i] = g.fishCountPerItem[i] + 1
 	}
 	return g
 }
 
 func (g *Game) tick() {
 	g.rounds++
-	numFishToAdd := 0
-	for i, f := range g.fishes {
-		f--
-		if f == -1 {
-			f = 6
-			numFishToAdd++
-		}
-		g.fishes[i] = f
-	}
-	for i := 0; i < numFishToAdd; i++ {
-		g.fishes = append(g.fishes, 8)
-	}
+	num0 := g.fishCountPerItem[0]
+	num1 := g.fishCountPerItem[1]
+	num2 := g.fishCountPerItem[2]
+	num3 := g.fishCountPerItem[3]
+	num4 := g.fishCountPerItem[4]
+	num5 := g.fishCountPerItem[5]
+	num6 := g.fishCountPerItem[6]
+	num7 := g.fishCountPerItem[7]
+	num8 := g.fishCountPerItem[8]
+
+	g.fishCountPerItem[7] = num8
+	g.fishCountPerItem[6] = num7 + num0
+	g.fishCountPerItem[5] = num6
+	g.fishCountPerItem[4] = num5
+	g.fishCountPerItem[3] = num4
+	g.fishCountPerItem[2] = num3
+	g.fishCountPerItem[1] = num2
+	g.fishCountPerItem[0] = num1
+	g.fishCountPerItem[8] = num0
 }
 
 func (g *Game) playRounds(times int) {
@@ -67,5 +74,9 @@ func (g *Game) playRounds(times int) {
 }
 
 func (g *Game) fishCount() int {
-	return len(g.fishes)
+	totalCount := 0
+	for _, v := range g.fishCountPerItem {
+		totalCount += v
+	}
+	return totalCount
 }
