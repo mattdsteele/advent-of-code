@@ -1,4 +1,4 @@
-# Advent of Code - 2021 - Golang Edition
+# Advent of Code
 
 ![shield](https://img.shields.io/endpoint?url=https%3A%2F%2Fus-central1-sandbox-254315.cloudfunctions.net%2FShields)
 
