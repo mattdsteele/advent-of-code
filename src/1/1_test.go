@@ -1,7 +1,6 @@
 package main
 
 import (
-	"strconv"
 	"testing"
 
 	util "github.com/mattdsteele/advent-of-code"
@@ -13,11 +12,11 @@ func TestParse(t *testing.T) {
 	input := `1
 2
 3
-4
+5
 `
 	lines := util.SliceAtLine(input)
 	count := sum(lines)
-	tst.Equals(t, 10, count)
+	tst.Equals(t, 11, count)
 }
 
 func TestSilver(t *testing.T) {
@@ -34,8 +33,28 @@ func TestSilver(t *testing.T) {
 8000
 9000
 
-10000`
+10000
+`
 	lines := util.SliceAtLine(input)
 	tst.Equals(t, 24000, silverResult(lines))
 }
+func TestGold(t *testing.T) {
+	input := `1000
+2000
+3000
 
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000
+`
+	lines := util.SliceAtLine(input)
+	tst.Equals(t, 45000, goldResult(lines))
+
+}
