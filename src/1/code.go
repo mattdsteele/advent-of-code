@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	// silver()
+	silver()
 	gold()
 }
 
