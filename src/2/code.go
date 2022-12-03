@@ -34,7 +34,7 @@ func silver() {
 }
 
 func gold() {
-	// Print gold result
+	fmt.Println(goldResult(util.ReadFile("src/2/input.txt")))
 }
 
 func silverResult(lines []string) (total int) {
@@ -61,4 +61,43 @@ func silverPoints(line string) int {
 	}
 
 	return throwPoints
+}
+
+func goldResult(lines []string) (total int) {
+	for _, line := range lines {
+		total += goldPoint(line)
+	}
+	return total
+}
+func goldPoint(line string) int {
+	pointsMapping := map[string]int{
+		"X": 0,
+		"Y": 3,
+		"Z": 6,
+	}
+	vals := strings.Split(line, " ")
+	me := vals[1]
+	totalPoints := pointsMapping[me]
+
+	foe := vals[0]
+	foeTranslate := equivalentsMap[foe]
+	// which one requires it
+	if totalPoints == 3 {
+		totalPoints += pointsMap[foeTranslate]
+	} else {
+		if totalPoints == 0 {
+			// which throw is defeated by foeTranslate?
+			toThrow := defeatsMap[foeTranslate]
+			totalPoints += pointsMap[toThrow]
+		} else {
+			// which throw defeats foeTranslate?
+			options := []string{"X", "Y", "Z"}
+			for _, option := range options {
+				if defeatsMap[option] == foeTranslate {
+					totalPoints += pointsMap[option]
+				}
+			}
+		}
+	}
+	return totalPoints
 }
