@@ -37,3 +37,23 @@ CrZsJsPPZsGzwwsLwLmpwMDw`
 	lines := util.SliceAtLine(input)
 	tst.Equals(t, 157, silverCalculate(lines))
 }
+
+func TestGoldSimilar(t *testing.T) {
+	input := `vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg`
+	inputs := util.SliceAtLine(input)
+	tst.Equals(t, "r", goldSimilar(inputs))
+}
+
+func TestGoldScore(t *testing.T) {
+	input := `vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw`
+	lines := util.SliceAtLine(input)
+	tst.Equals(t, 70, goldCalculate(lines))
+
+}

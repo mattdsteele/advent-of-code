@@ -10,7 +10,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -56,6 +56,20 @@ func gold() {
 	fmt.Println(goldCalculate(lines))
 }
 
-func goldCalculate(lines []string) string {
-	return "input"
+func goldCalculate(lines []string) (total int) {
+	for i := 0; i < len(lines); i += 3 {
+		group := []string{lines[i], lines[i+1], lines[i+2]}
+		total += priority(goldSimilar(group))
+	}
+	return total
+}
+
+func goldSimilar(inputs []string) string {
+	first := inputs[0]
+	for _, r := range first {
+		if strings.ContainsRune(inputs[1], r) && strings.ContainsRune(inputs[2], r) {
+			return string(r)
+		}
+	}
+	panic("could not find rune")
 }
