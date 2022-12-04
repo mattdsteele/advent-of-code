@@ -10,7 +10,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -32,8 +32,13 @@ func gold() {
 	fmt.Println(goldCalculate(lines))
 }
 
-func goldCalculate(lines []string) string {
-	return "input"
+func goldCalculate(input []string) (count int) {
+	for _, i := range input {
+		if overlaps(i) {
+			count++
+		}
+	}
+	return count
 }
 
 type assignment struct {
@@ -59,4 +64,15 @@ func enclosed(s string) bool {
 	assignment1Lower := assignment1.low >= assignment2.low && assignment1.high <= assignment2.high
 	assignment2Lower := assignment2.low >= assignment1.low && assignment2.high <= assignment1.high
 	return assignment1Lower || assignment2Lower
+}
+
+func overlaps(s string) bool {
+	assignments := strings.Split(s, ",")
+	assignment1 := makeAssignment(assignments[0])
+	assignment2 := makeAssignment(assignments[1])
+	assignment1LowOverlap := assignment1.low >= assignment2.low && assignment1.low <= assignment2.high
+	assignment1HighOverlap := assignment1.high >= assignment2.low && assignment1.high <= assignment2.high
+	assignment2LowOverlap := assignment2.low >= assignment1.low && assignment2.low <= assignment1.high
+	assignment2HighOverlap := assignment2.high >= assignment1.low && assignment2.high <= assignment1.high
+	return assignment1HighOverlap || assignment1LowOverlap || assignment2LowOverlap || assignment2HighOverlap
 }

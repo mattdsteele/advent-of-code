@@ -27,5 +27,21 @@ func TestSilver(t *testing.T) {
 2-6,4-8`
 	lines := util.SliceAtLine(exampleInput)
 	tst.Equals(t, 2, silverCalculate(lines))
+}
 
+func TestOverlap(t *testing.T) {
+	exampleInput := `2-4,6-8
+2-3,4-5
+5-7,7-9
+2-8,3-7
+6-6,4-6
+2-6,4-8`
+	lines := util.SliceAtLine(exampleInput)
+	tst.Equals(t, false, overlaps(lines[0]))
+	tst.Equals(t, true, overlaps(lines[2]))
+	tst.Equals(t, true, overlaps(lines[3]))
+	tst.Equals(t, true, overlaps(lines[4]))
+	tst.Equals(t, true, overlaps(lines[5]))
+
+	tst.Equals(t, 4, goldCalculate(lines))
 }
