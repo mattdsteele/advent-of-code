@@ -18,13 +18,8 @@ func silver() {
 	fmt.Println(silverCalculate(lines))
 }
 
-func silverCalculate(input []string) (count int) {
-	for _, i := range input {
-		if enclosed(i) {
-			count++
-		}
-	}
-	return count
+func silverCalculate(input []string) int {
+	return calculate(input, enclosed)
 }
 
 func gold() {
@@ -32,13 +27,17 @@ func gold() {
 	fmt.Println(goldCalculate(lines))
 }
 
-func goldCalculate(input []string) (count int) {
+func calculate(input []string, strat func(string) bool) (count int) {
 	for _, i := range input {
-		if overlaps(i) {
+		if strat(i) {
 			count++
 		}
 	}
 	return count
+
+}
+func goldCalculate(input []string) int {
+	return calculate(input, overlaps)
 }
 
 type assignment struct {
