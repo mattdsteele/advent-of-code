@@ -11,7 +11,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -28,8 +28,8 @@ func gold() {
 	fmt.Println(goldCalculate(lines))
 }
 
-func goldCalculate(lines []string) string {
-	return "input"
+func goldCalculate(input []string) string {
+	return parse(input).playGold()
 }
 
 type Game struct {
@@ -55,9 +55,22 @@ func (g *Game) playSilver() string {
 	}
 	return g.printBase()
 }
+func (g *Game) playGold() string {
+	for _, s := range g.steps {
+		c := s.count
+		v := g.columns[s.from-1].popCount(c)
+		g.columns[s.to-1].pushAll(v)
+	}
+	return g.printBase()
+}
+
 func (g *Game) printBase() (b string) {
 	for _, c := range g.columns {
-		b += c.items[0]
+		if len(c.items) == 0 {
+			b += "-"
+		} else {
+			b += c.items[0]
+		}
 	}
 	return b
 }
@@ -71,9 +84,20 @@ func (c *Column) pop() string {
 	c.items = c.items[1:]
 	return item
 }
+func (c *Column) popCount(n int) []string {
+	items := c.items[0:n]
+	c.items = c.items[n:]
+	return items
+}
 
 func (c *Column) push(s string) {
 	c.items = append([]string{s}, c.items...)
+}
+func (c *Column) pushAll(s []string) {
+	newItems := []string{}
+	newItems = append(newItems, s...)
+	newItems = append(newItems, c.items...)
+	c.items = newItems
 }
 
 func parse(lines []string) *Game {

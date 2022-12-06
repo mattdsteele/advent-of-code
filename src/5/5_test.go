@@ -40,3 +40,8 @@ func TestSilverGame(t *testing.T) {
 	game := parse(util.SliceAtLine(sample))
 	tst.Equals(t, "CMZ", game.playSilver())
 }
+
+func TestGoldGame(t *testing.T) {
+	game := parse(util.SliceAtLine(sample))
+	tst.Equals(t, "MCD", game.playGold())
+}
