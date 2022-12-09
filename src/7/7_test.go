@@ -36,4 +36,6 @@ $ ls
 	rootDir := parseInput(lines)
 	tst.Equals(t, 48381165, rootDir.size())
 	tst.Equals(t, "95437", silverCalculate(lines))
+
+	tst.Equals(t, "24933642", goldCalculate(lines))
 }

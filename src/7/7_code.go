@@ -10,7 +10,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -34,7 +34,21 @@ func gold() {
 }
 
 func goldCalculate(lines []string) string {
-	return "input"
+	rootDir := parseInput(lines)
+	rootSize := rootDir.size()
+	availableSpace := 70000000
+	neededSpace := 30000000
+	remainingSpace := availableSpace - rootSize
+	smallestSize := availableSpace
+	neededToDeleteSpace := neededSpace - remainingSpace
+	for _, d := range rootDir.flatDirs() {
+		if d.size() > neededToDeleteSpace {
+			if d.size() < smallestSize {
+				smallestSize = d.size()
+			}
+		}
+	}
+	return fmt.Sprint(smallestSize)
 }
 
 func parseInput(lines []string) *Directory {
