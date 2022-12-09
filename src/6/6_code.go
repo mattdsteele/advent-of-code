@@ -9,7 +9,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -18,10 +18,14 @@ func silver() {
 }
 
 func silverCalculate(input string) int {
+	return uniqueForValue(input, 4)
+}
+
+func uniqueForValue(input string, count int) int {
 	signal := ""
 	for i, r := range input {
 		signal += string(r)
-		if len(signal) > 4 {
+		if len(signal) > count {
 			signal = signal[1:]
 			if allUnique(signal) {
 				return i + 1
@@ -46,5 +50,5 @@ func gold() {
 }
 
 func goldCalculate(lines string) int {
-	return 0
+	return uniqueForValue(lines, 14)
 }
