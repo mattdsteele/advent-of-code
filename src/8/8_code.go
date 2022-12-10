@@ -10,7 +10,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -27,8 +27,9 @@ func gold() {
 	fmt.Println(goldCalculate(lines))
 }
 
-func goldCalculate(lines []string) string {
-	return "input"
+func goldCalculate(lines []string) int {
+	board := parseBoard(lines)
+	return board.bestScore()
 }
 
 func parseBoard(lines []string) *Board {
@@ -63,6 +64,31 @@ func (b *Board) get(x, y int) *Tree {
 	}
 	panic("could not find tree")
 }
+
+func (b *Board) scenicScore(x, y int) int {
+	above := b.viewingDistanceAbove(x, y)
+	below := b.viewingDistanceBelow(x, y)
+	left := b.viewingDistanceLeft(x, y)
+	right := b.viewingDistanceRight(x, y)
+	return above * below * left * right
+}
+
+func (b *Board) bestScore() (bestScore int) {
+	x, y := 0, 0
+	for x < b.width {
+		for y < b.height {
+			score := b.scenicScore(x, y)
+			if score > bestScore {
+				bestScore = score
+			}
+			y++
+		}
+		x++
+		y = 0
+	}
+	return bestScore
+}
+
 func (b *Board) visibleTrees() (count int) {
 	x, y := 0, 0
 	for x < b.width {
@@ -95,6 +121,59 @@ func (b *Board) greatestHeightAround(x, y int) int {
 	sort.IntSlice.Sort(heights)
 	return heights[0]
 }
+func (b *Board) viewingDistanceAbove(x, y int) (distance int) {
+	height := b.get(x, y).height
+	yToCheck := y - 1
+	for yToCheck >= 0 {
+		distance++
+		h := b.get(x, yToCheck).height
+		if h >= height {
+			return distance
+		}
+		yToCheck--
+	}
+	return distance
+}
+func (b *Board) viewingDistanceBelow(x, y int) (distance int) {
+	height := b.get(x, y).height
+	yToCheck := y + 1
+	for yToCheck < b.height {
+		distance++
+		h := b.get(x, yToCheck).height
+		if h >= height {
+			return distance
+		}
+		yToCheck++
+	}
+	return distance
+}
+func (b *Board) viewingDistanceLeft(x, y int) (distance int) {
+	height := b.get(x, y).height
+	xToCheck := x - 1
+	for xToCheck >= 0 {
+		distance++
+		h := b.get(xToCheck, y).height
+		if h >= height {
+			return distance
+		}
+		xToCheck--
+	}
+	return distance
+}
+func (b *Board) viewingDistanceRight(x, y int) (distance int) {
+	height := b.get(x, y).height
+	xToCheck := x + 1
+	for xToCheck < b.width {
+		distance++
+		h := b.get(xToCheck, y).height
+		if h >= height {
+			return distance
+		}
+		xToCheck++
+	}
+	return distance
+}
+
 func (b *Board) greatestHeightAbove(x, y int) int {
 	yToCheck := 0
 	greatestHeight := 0

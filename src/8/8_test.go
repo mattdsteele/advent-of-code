@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 
 	util "github.com/mattdsteele/advent-of-code"
@@ -20,7 +19,6 @@ func TestParse(t *testing.T) {
 	tst.Equals(t, 5, board.width)
 	tst.Equals(t, 5, board.height)
 	t0 := board.get(0, 0)
-	fmt.Println(t0)
 	tst.Equals(t, 3, t0.height)
 	tst.Equals(t, 1, board.get(1, 3).height)
 
@@ -32,4 +30,8 @@ func TestParse(t *testing.T) {
 	tst.Equals(t, true, board.visible(1, 2))
 
 	tst.Equals(t, 21, silverCalculate(lines))
+
+	tst.Equals(t, 5, board.get(3, 2).height)
+	tst.Equals(t, 4, board.scenicScore(1, 2))
+	tst.Equals(t, 8, goldCalculate(lines))
 }
