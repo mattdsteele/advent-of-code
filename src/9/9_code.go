@@ -10,7 +10,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -30,7 +30,9 @@ func gold() {
 }
 
 func goldCalculate(lines []string) string {
-	return "input"
+	g := newGameOfSize(lines, 10)
+	g.runLines()
+	return fmt.Sprintf("%d", g.audit.numberOfSpots())
 }
 
 type Knot struct {
@@ -43,8 +45,10 @@ func (k *Knot) serialize() string {
 
 type Game struct {
 	instructions []string
-	head, tail   *Knot
-	audit        *Audit
+	knots        []*Knot
+	// head         *Knot
+	head, tail *Knot
+	audit      *Audit
 }
 
 func (g *Game) logPosition(k *Knot) {
@@ -78,8 +82,11 @@ func (g *Game) runLines() {
 }
 
 func (g *Game) moveTail() {
-	h := g.head
-	t := g.tail
+	g.moveFollow(g.head, g.tail)
+}
+func (g *Game) moveFollow(lead, follow *Knot) {
+	h := lead
+	t := follow
 	// in same row
 	if h.x == t.x {
 		if abs(h.y-t.y) > 1 {
@@ -114,7 +121,9 @@ func (g *Game) moveTail() {
 }
 func (g *Game) playTurn(direction string) {
 	g.moveHead(direction)
-	g.moveTail()
+	for i := 0; i < (len(g.knots) - 1); i++ {
+		g.moveFollow(g.knots[i], g.knots[i+1])
+	}
 	g.logPosition(g.tail)
 }
 func abs(x int) int {
@@ -125,10 +134,16 @@ func abs(x int) int {
 }
 
 func newGame(instructions []string) *Game {
+	return newGameOfSize(instructions, 2)
+}
+func newGameOfSize(instructions []string, size int) *Game {
 	g := new(Game)
 	g.instructions = instructions
-	g.head = new(Knot)
-	g.tail = new(Knot)
+	for i := 0; i < size; i++ {
+		g.knots = append(g.knots, new(Knot))
+	}
+	g.head = g.knots[0]
+	g.tail = g.knots[len(g.knots)-1]
 	g.audit = newAudit()
 	return g
 }

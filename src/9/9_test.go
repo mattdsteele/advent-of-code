@@ -126,3 +126,16 @@ func TestKnotFunctions(t *testing.T) {
 	k.y = -4
 	tst.Equals(t, "12,-4", k.serialize())
 }
+
+func TestGoldScenario(t *testing.T) {
+	g := newGameOfSize(util.SliceAtLine(`R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20`), 10)
+	g.runLines()
+	tst.Equals(t, 36, g.audit.numberOfSpots())
+}
