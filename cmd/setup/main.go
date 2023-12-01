@@ -36,7 +36,7 @@ func setupDay(day string, year string) {
 func copyTemplateFiles(day string) {
 	templateDir := filepath.Join("./", "template")
 	destDir := filepath.Join("./", "src", day)
-	err := util.Copy(filepath.Join(templateDir, "code.go"), filepath.Join(destDir, "code.go"))
+	err := util.Copy(filepath.Join(templateDir, "code.go"), filepath.Join(destDir, fmt.Sprintf("%s_code.go", day)))
 	if err != nil {
 		log.Fatal(err)
 	}

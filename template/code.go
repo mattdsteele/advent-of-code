@@ -1,17 +1,30 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	util "github.com/mattdsteele/advent-of-code"
+)
 
 func main() {
 	silver()
-	gold()
+	// gold()
 }
 
 func silver() {
-	fmt.Println("Silver result")
+	lines := util.ReadFile("src/X/input.txt")
+	fmt.Println(silverCalculate(lines))
+}
 
+func silverCalculate(input []string) string {
+	return "input"
 }
 
 func gold() {
-	// Print gold result
+	lines := util.ReadFile("src/X/input.txt")
+	fmt.Println(goldCalculate(lines))
+}
+
+func goldCalculate(lines []string) string {
+	return "input"
 }
