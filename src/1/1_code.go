@@ -57,24 +57,20 @@ func goldCalculate(lines []string) string {
 
 func calibrationValue(line string, mappings map[string]rune) int {
 	firstPosition := -1
-	var lastPosition int
+	lastPosition := -1
 	var firstValue rune
 	var lastValue rune
 	for key, val := range mappings {
 		first := strings.Index(line, key)
 		if first != -1 {
-			if firstPosition == -1 {
-				firstPosition = first
-				firstValue = val
-			}
-			if first < firstPosition {
+			if firstPosition == -1 || first < firstPosition {
 				firstPosition = first
 				firstValue = val
 			}
 		}
 
 		last := strings.LastIndex(line, key)
-		if last != -1 && last > lastPosition {
+		if last > lastPosition {
 			lastPosition = last
 			lastValue = val
 		}
@@ -106,7 +102,6 @@ func goldCalibration(s string) int {
 		"seven": '7',
 		"eight": '8',
 		"nine":  '9',
-		"zero":  '0',
 	}
 	return calibrationValue(s, mappings)
 }
