@@ -12,4 +12,4 @@ jobs:
         name: Advent Of Code
         env:
           AOC_SESSION_COOKIE: ${{ secrets.AOC_SESSION_COOKIE }}
-          AOC_YEAR: ${{ secrets.AOC_YEAR }}
+          AOC_USER: ${{ secrets.AOC_USER }}
