@@ -6,13 +6,17 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 
 	util "github.com/mattdsteele/advent-of-code"
 	"github.com/mattdsteele/advent-of-code/aoc"
 )
 
 func main() {
-	year := os.Getenv("AOC_YEAR")
+	year, yearSet := os.LookupEnv("AOC_YEAR")
+	if !yearSet {
+		year = time.Now().Format("2006")
+	}
 	if len(os.Args) != 2 {
 		panic("Did not pass in a day")
 	}
