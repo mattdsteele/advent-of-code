@@ -8,6 +8,12 @@ In the `cmd/` folder are the following utilities:
 
 `setup/` - Preps a day by downloading the input
 
+Need to set an `AOC_SESSION_COOKIE` variable, then run:
+
+```sh
+go run ./cmd/setup/main.go {day}
+```
+
 `submit/` - Submits an answer
 
 `sync/` - Identifies any answers not submitted successfully, and submits each in turn
