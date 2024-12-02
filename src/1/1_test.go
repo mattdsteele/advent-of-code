@@ -23,3 +23,10 @@ func TestSort(t *testing.T) {
 	sort.Ints(unsorted)
 	tst.Equals(t, []int{1, 2, 3, 4}, unsorted)
 }
+
+func TestNumberEntries(t *testing.T) {
+	rightEntries := []int{1, 1, 2, 3, 4}
+	tst.Equals(t, 2, numberEntries(rightEntries, 1))
+	tst.Equals(t, 1, numberEntries(rightEntries, 2))
+	tst.Equals(t, 0, numberEntries(rightEntries, 5))
+}
