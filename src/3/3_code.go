@@ -53,9 +53,11 @@ func gold() {
 
 func goldCalculate(lines []string) string {
 	total := 0
+	fullLines := ""
 	for _, l := range lines {
-		total += goldSolve(l, 0)
+		fullLines += l
 	}
+	total += goldSolve(fullLines, 0)
 	return strconv.Itoa(total)
 }
 
