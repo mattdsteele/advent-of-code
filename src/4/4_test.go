@@ -7,6 +7,17 @@ import (
 	tst "github.com/mattdsteele/advent-of-code/testing"
 )
 
+var sample = `MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX`
+
 func TestFindForward(t *testing.T) {
 	s := Search{}
 	s.fields = util.SliceAtLine(`MMMSXXMASM
@@ -17,28 +28,17 @@ MSAMXMSMSA`)
 }
 
 func TestSilverCalc(t *testing.T) {
-	tst.Equals(t, "18", silverCalculate(util.SliceAtLine(`MMMSXXMASM
-MSAMXMSMSA
-AMXSXMAAMM
-MSAMASMSMX
-XMASAMXAMM
-XXAMMXXAMA
-SMSMSASXSS
-SAXAMASAAA
-MAMMMXMMMM
-MXMXAXMASX`)))
+	tst.Equals(t, "18", silverCalculate(util.SliceAtLine(sample)))
 }
 func TestFindAll(t *testing.T) {
 	s := Search{}
-	s.fields = util.SliceAtLine(`MMMSXXMASM
-MSAMXMSMSA
-AMXSXMAAMM
-MSAMASMSMX
-XMASAMXAMM
-XXAMMXXAMA
-SMSMSASXSS
-SAXAMASAAA
-MAMMMXMMMM
-MXMXAXMASX`)
+	s.fields = util.SliceAtLine(sample)
 	tst.Equals(t, 18, s.silver())
+}
+
+func TestGo(t *testing.T) {
+	s := Search{}
+	s.fields = util.SliceAtLine(sample)
+	tst.Equals(t, true, s.goldCheck(1, 2))
+	tst.Equals(t, 9, s.gold())
 }

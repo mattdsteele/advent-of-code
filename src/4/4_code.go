@@ -9,7 +9,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -28,8 +28,10 @@ func gold() {
 	fmt.Println(goldCalculate(lines))
 }
 
-func goldCalculate(lines []string) string {
-	return "input"
+func goldCalculate(input []string) string {
+	s := Search{}
+	s.fields = input
+	return strconv.Itoa(s.gold())
 }
 
 type Search struct {
@@ -55,7 +57,6 @@ func (s Search) checkOp(x, y int, xOp, yOp op) bool {
 
 }
 func (s *Search) silver() (count int) {
-	// Your logic here to calculate the 'silver' value
 	yLen := len(s.fields[0])
 	for x := range s.fields {
 		y := 0
@@ -94,4 +95,41 @@ func (s Search) letterAt(x, y int, letter string) bool {
 		return false
 	}
 	return string(f[y]) == letter
+}
+
+func (s Search) goldCheck(x, y int) bool {
+	if s.letterAt(x, y, "A") {
+		if s.letterAt(incOp(x), incOp(y), "M") && s.letterAt(decOp(x), decOp(y), "S") {
+			if s.letterAt(incOp(x), decOp(y), "M") && s.letterAt(decOp(x), incOp(y), "S") {
+				return true
+			}
+			if s.letterAt(incOp(x), decOp(y), "S") && s.letterAt(decOp(x), incOp(y), "M") {
+				return true
+			}
+		}
+		if s.letterAt(incOp(x), incOp(y), "S") && s.letterAt(decOp(x), decOp(y), "M") {
+			if s.letterAt(incOp(x), decOp(y), "M") && s.letterAt(decOp(x), incOp(y), "S") {
+				return true
+			}
+			if s.letterAt(incOp(x), decOp(y), "S") && s.letterAt(decOp(x), incOp(y), "M") {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (s Search) gold() (count int) {
+	yLen := len(s.fields[0])
+	for x := range s.fields {
+		y := 0
+		for y < yLen {
+			if s.goldCheck(x, y) {
+				count++
+			}
+			y++
+		}
+	}
+	return count
+
 }
