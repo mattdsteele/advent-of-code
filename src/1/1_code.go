@@ -9,7 +9,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -50,6 +50,35 @@ func gold() {
 	fmt.Println(goldCalculate(lines))
 }
 
-func goldCalculate(lines []string) string {
-	return "input"
+func goldCalculate(input []string) string {
+	status := 50
+	prevStatus := 50
+	count := 0
+	for _, i := range input {
+		z := delta(i)
+		turns := int(z / 100)
+		if turns < 0 {
+			turns *= -1
+		}
+		count += turns
+		z = z % 100
+		status += z
+		if status%100 == 0 {
+			count++
+		}
+		if status > 100 {
+			if prevStatus < 100 {
+				count++
+			}
+			status -= 100
+		}
+		if status < 0 {
+			if prevStatus > 0 {
+				count++
+			}
+			status += 100
+		}
+		prevStatus = status
+	}
+	return strconv.Itoa(count)
 }
