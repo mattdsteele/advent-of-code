@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	util "github.com/mattdsteele/advent-of-code"
 )
@@ -81,6 +82,13 @@ func recurCandidates(builtCandidate string, remainingInput string, size int, lar
 				*largest = candidate
 			}
 		} else {
+			// if there is a chance it can win, recur it
+			maxVal := newCand + strings.Repeat("9", size-len(newCand))
+			largestOpt, _ := strconv.Atoi(maxVal)
+			if largestOpt < *largest {
+				return
+			}
+
 			recurCandidates(newCand, remaining, size, largest)
 		}
 	}
