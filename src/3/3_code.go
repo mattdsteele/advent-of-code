@@ -9,7 +9,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -31,11 +31,14 @@ func gold() {
 }
 
 func goldCalculate(lines []string) string {
-	return "input"
+	sum := 0
+	for _, i := range lines {
+		sum += goldJoltage(i)
+	}
+	return strconv.Itoa(sum)
 }
 
 func silverJoltage(input string) int {
-	// let's brute force this
 	largest := 0
 	for i, s := range input {
 		substr := input[i+1:]
@@ -48,4 +51,49 @@ func silverJoltage(input string) int {
 		}
 	}
 	return largest
+}
+
+func goldJoltage(input string) int {
+	largest := 0
+	size := 12
+	for _, c := range candidates(input, size) {
+		candidate, _ := strconv.Atoi(c)
+		if candidate > largest {
+			largest = candidate
+		}
+	}
+	return largest
+}
+
+func candidates(input string, size int) []string {
+	candidateMap := map[string]bool{}
+	cans := &candidateMap
+	builtCandidate := ""
+	for i, s := range input {
+		remaining := input[i+1:]
+		builtCandidate = ""
+		recurCandidates(builtCandidate+string(s), remaining, size, cans)
+
+	}
+
+	candidateList := []string{}
+	for k, _ := range candidateMap {
+		candidateList = append(candidateList, k)
+	}
+
+	return candidateList
+}
+
+func recurCandidates(builtCandidate string, remainingInput string, size int, candidates *map[string]bool) {
+	for i, s := range remainingInput {
+		remaining := remainingInput[i+1:]
+		if len(builtCandidate)+1 == size {
+			candMap := *candidates
+			candMap[builtCandidate+string(s)] = true
+		} else {
+			recurCandidates(builtCandidate+string(s), remaining, size, candidates)
+		}
+		// append
+	}
+
 }
