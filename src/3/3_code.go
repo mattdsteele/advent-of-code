@@ -54,46 +54,35 @@ func silverJoltage(input string) int {
 }
 
 func goldJoltage(input string) int {
-	largest := 0
 	size := 12
-	for _, c := range candidates(input, size) {
-		candidate, _ := strconv.Atoi(c)
-		if candidate > largest {
-			largest = candidate
-		}
-	}
-	return largest
+	return candidates(input, size)
 }
 
-func candidates(input string, size int) []string {
-	candidateMap := map[string]bool{}
-	cans := &candidateMap
+func candidates(input string, size int) int {
+	largest := 0
 	builtCandidate := ""
 	for i, s := range input {
 		remaining := input[i+1:]
 		builtCandidate = ""
-		recurCandidates(builtCandidate+string(s), remaining, size, cans)
+		recurCandidates(builtCandidate+string(s), remaining, size, &largest)
 
 	}
 
-	candidateList := []string{}
-	for k, _ := range candidateMap {
-		candidateList = append(candidateList, k)
-	}
-
-	return candidateList
+	return largest
 }
 
-func recurCandidates(builtCandidate string, remainingInput string, size int, candidates *map[string]bool) {
+func recurCandidates(builtCandidate string, remainingInput string, size int, largest *int) {
 	for i, s := range remainingInput {
 		remaining := remainingInput[i+1:]
+		newCand := builtCandidate + string(s)
+		candidate, _ := strconv.Atoi(newCand)
 		if len(builtCandidate)+1 == size {
-			candMap := *candidates
-			candMap[builtCandidate+string(s)] = true
+			if candidate > *largest {
+				*largest = candidate
+			}
 		} else {
-			recurCandidates(builtCandidate+string(s), remaining, size, candidates)
+			recurCandidates(newCand, remaining, size, largest)
 		}
-		// append
 	}
 
 }
