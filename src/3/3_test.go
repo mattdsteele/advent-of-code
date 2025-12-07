@@ -20,12 +20,16 @@ func TestSilver(t *testing.T) {
 
 func TestGold(t *testing.T) {
 	exampleInput := `987654321111111
-811111111111119
-234234234234278
-818181911112111`
+	811111111111119
+	234234234234278
+	818181911112111`
 	lines := util.SliceAtLine(exampleInput)
-	tst.Equals(t, 987654321111, goldJoltage(lines[0]))
-	tst.Equals(t, 811111111119, goldJoltage(lines[1]))
-	tst.Equals(t, 434234234278, goldJoltage(lines[2]))
-	tst.Equals(t, 888911112111, goldJoltage(lines[3]))
+	tst.Equals(t, int64(987654321111), goldJoltage(lines[0]))
+	tst.Equals(t, int64(811111111119), goldJoltage(lines[1]))
+	tst.Equals(t, int64(434234234278), goldJoltage(lines[2]))
+	tst.Equals(t, int64(888911112111), goldJoltage(lines[3]))
+	tst.Equals(t, "3121910778619", goldCalculate(lines))
+
+	// real input
+	tst.Equals(t, int64(875555555452), goldJoltage("4426546555433545424424345444644242452452532444564422646557424354153538454225332755435544545533324152"))
 }
