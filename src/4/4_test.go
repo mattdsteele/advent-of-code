@@ -27,3 +27,9 @@ func TestSilver(t *testing.T) {
 	silver := g.silver()
 	tst.Equals(t, 13, silver)
 }
+
+func TestGold(t *testing.T) {
+	lines := util.SliceAtLine(exampleInput)
+	g := parse(lines)
+	tst.Equals(t, 43, g.gold())
+}

@@ -9,7 +9,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -27,7 +27,7 @@ func gold() {
 }
 
 func goldCalculate(lines []string) string {
-	return "input"
+	return strconv.Itoa(parse(lines).gold())
 }
 
 type Point struct {
@@ -63,10 +63,34 @@ func (g Game) surrounding(row, column int) (total int) {
 func (g Game) surroundingPoints(point *Point) (total int) {
 	return g.surrounding(point.row, point.column)
 }
-func (g Game) silver() (total int) {
+func (g Game) accessible(point *Point) bool {
 	threshold := 4
+	return g.surroundingPoints(point) < threshold
+
+}
+
+func (g Game) gold() (totalRemoved int) {
+	pointsToRemove := []string{}
+	pointsRemoved := 1
+	for pointsRemoved > 0 {
+		for k, v := range g.points {
+			if g.accessible(v) {
+				pointsToRemove = append(pointsToRemove, k)
+			}
+		}
+		for _, k := range pointsToRemove {
+			delete(g.points, k)
+		}
+		pointsRemoved = len(pointsToRemove)
+		totalRemoved += pointsRemoved
+		pointsToRemove = []string{}
+	}
+	return totalRemoved
+}
+
+func (g Game) silver() (total int) {
 	for _, v := range g.points {
-		if g.surroundingPoints(v) < threshold {
+		if g.accessible(v) {
 			total++
 		}
 	}
