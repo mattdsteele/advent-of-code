@@ -11,7 +11,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -25,12 +25,13 @@ func silverCalculate(input []string) string {
 }
 
 func gold() {
-	lines := util.ReadFile("src/X/input.txt")
+	lines := util.ReadFile("src/5/input.txt")
 	fmt.Println(goldCalculate(lines))
 }
 
 func goldCalculate(lines []string) string {
-	return "input"
+	silver := parse(lines).gold()
+	return fmt.Sprintf("%d", silver)
 }
 
 type Data struct {
@@ -89,4 +90,56 @@ func (d *Data) silver() (total int) {
 func inRange(r []int, test int) bool {
 	low, high := r[0], r[1]
 	return test >= low && test <= high
+}
+
+func dedupe(input [][]int) [][]int {
+	allValidRanges := [][]int{}
+	for _, i := range input {
+		low, high := i[0], i[1]
+
+		// now check valid ranges
+		adjusted := false
+		for _, r := range allValidRanges {
+			rLow, rHigh := r[0], r[1]
+			if low > rLow && high < rHigh {
+				// totally within range
+				adjusted = true
+				continue
+			}
+			if low < rLow && high < rHigh && high > rLow {
+				// adjust the low threshold
+				adjusted = true
+				r[0] = low
+			}
+
+			if low > rLow && low < rHigh && high > rHigh {
+				// adjust the high threshold
+				adjusted = true
+				r[1] = high
+			}
+		}
+		if !adjusted {
+			allValidRanges = append(allValidRanges, []int{low, high})
+		}
+	}
+	return allValidRanges
+}
+
+func (d *Data) gold() int {
+	ranges := len(d.ranges)
+	newRanges := dedupe(d.ranges)
+
+	for ranges != len(newRanges) {
+		ranges = len(newRanges)
+		newRanges = dedupe(newRanges)
+	}
+
+	// still need to dedupe values
+	total := 0
+	// fmt.Println("final ranges")
+	// fmt.Println(newRanges)
+	for _, r := range newRanges {
+		total += r[1] - r[0] + 1
+	}
+	return total
 }

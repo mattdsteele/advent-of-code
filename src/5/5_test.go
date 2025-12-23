@@ -30,3 +30,9 @@ func TestSilver(t *testing.T) {
 	tst.Equals(t, false, data.inRange(6))
 	tst.Equals(t, 3, data.silver())
 }
+
+func TestGold(t *testing.T) {
+	lines := util.SliceAtLine(exampleInput)
+	data := parse(lines)
+	tst.Equals(t, 14, data.gold())
+}
