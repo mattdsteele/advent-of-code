@@ -35,4 +35,19 @@ func TestGold(t *testing.T) {
 	lines := util.SliceAtLine(exampleInput)
 	data := parse(lines)
 	tst.Equals(t, 14, data.gold())
+	var moreInput = `3-5
+10-14
+16-20
+12-18
+9-21
+11-19
+11-21
+
+1
+5
+8
+11
+17
+32`
+	tst.Equals(t, 16, parse(util.SliceAtLine(moreInput)).gold())
 }

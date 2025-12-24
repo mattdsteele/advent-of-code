@@ -101,24 +101,26 @@ func dedupe(input [][]int) [][]int {
 		adjusted := false
 		for _, r := range allValidRanges {
 			rLow, rHigh := r[0], r[1]
-			if low > rLow && high < rHigh {
+			if low >= rLow && high <= rHigh {
 				// totally within range
 				adjusted = true
 				continue
 			}
-			if low < rLow && high < rHigh && high > rLow {
+			if low < rLow && high <= rHigh && high > rLow {
 				// adjust the low threshold
 				adjusted = true
 				r[0] = low
 			}
 
-			if low > rLow && low < rHigh && high > rHigh {
+			// if high > rHigh && low >= rLow && low < rHigh {
+			if low >= rLow && low < rHigh && high > rHigh {
 				// adjust the high threshold
 				adjusted = true
 				r[1] = high
 			}
 		}
 		if !adjusted {
+			// adding one outside range
 			allValidRanges = append(allValidRanges, []int{low, high})
 		}
 	}
@@ -136,8 +138,6 @@ func (d *Data) gold() int {
 
 	// still need to dedupe values
 	total := 0
-	// fmt.Println("final ranges")
-	// fmt.Println(newRanges)
 	for _, r := range newRanges {
 		total += r[1] - r[0] + 1
 	}
