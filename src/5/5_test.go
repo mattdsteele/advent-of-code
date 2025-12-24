@@ -38,8 +38,11 @@ func TestGold(t *testing.T) {
 	var moreInput = `3-5
 10-14
 16-20
+8-20
 12-18
+31-40
 9-21
+20-30
 11-19
 11-21
 
@@ -49,5 +52,5 @@ func TestGold(t *testing.T) {
 11
 17
 32`
-	tst.Equals(t, 16, parse(util.SliceAtLine(moreInput)).gold())
+	tst.Equals(t, 36, parse(util.SliceAtLine(moreInput)).gold())
 }

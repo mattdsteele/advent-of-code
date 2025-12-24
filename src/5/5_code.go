@@ -106,6 +106,13 @@ func dedupe(input [][]int) [][]int {
 				adjusted = true
 				continue
 			}
+
+			if low < rLow && high > rHigh {
+				adjusted = true
+				r[0] = low
+				r[1] = high
+			}
+
 			if low < rLow && high <= rHigh && high > rLow {
 				// adjust the low threshold
 				adjusted = true
@@ -138,8 +145,18 @@ func (d *Data) gold() int {
 
 	// still need to dedupe values
 	total := 0
+	edges := make(map[int]bool)
 	for _, r := range newRanges {
-		total += r[1] - r[0] + 1
+		low, high := r[0], r[1]
+		total += high - low + 1
+		if edges[low] {
+			total--
+		}
+		if edges[high] {
+			total--
+		}
+		edges[low] = true
+		edges[high] = true
 	}
 	return total
 }
