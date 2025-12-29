@@ -8,7 +8,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -27,13 +27,15 @@ func gold() {
 }
 
 func goldCalculate(input []string) string {
-	return "input"
+	result := parse(input).gold()
+	return fmt.Sprintf("%d", result)
 }
 
 type Game struct {
-	lines     []string
-	tachLines []string
-	beams     map[int]bool
+	lines         []string
+	tachLines     []string
+	beams         map[int]bool
+	beamUniverses map[int]int
 }
 
 func parse(lines []string) *Game {
@@ -41,6 +43,7 @@ func parse(lines []string) *Game {
 	g.lines = lines
 	g.tachLines = []string{}
 	g.beams = make(map[int]bool)
+	g.beamUniverses = make(map[int]int)
 
 	for i, l := range lines {
 		if i%2 == 0 {
@@ -65,6 +68,19 @@ func (g *Game) silverTick(line string) int {
 	}
 	return splits
 }
+func (g *Game) goldTick(line string) {
+	for i, c := range line {
+		if string(c) == "^" && g.beamUniverses[i] > 0 {
+			count := g.beamUniverses[i]
+			g.beamUniverses[i] = 0
+			g.beamUniverses[i-1] += count
+			g.beamUniverses[i+1] += count
+		}
+		if string(c) == "S" {
+			g.beamUniverses[i] = 1
+		}
+	}
+}
 
 func (g *Game) silver() int {
 	splits := 0
@@ -72,4 +88,20 @@ func (g *Game) silver() int {
 		splits += g.silverTick(l)
 	}
 	return splits
+}
+
+func (g *Game) goldCount() int {
+	total := 0
+	for _, v := range g.beamUniverses {
+		total += v
+	}
+	return total
+}
+
+func (g *Game) gold() int {
+	g.beams = make(map[int]bool)
+	for _, l := range g.tachLines {
+		g.goldTick(l)
+	}
+	return g.goldCount()
 }

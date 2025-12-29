@@ -49,3 +49,9 @@ func TestParse(t *testing.T) {
 
 	tst.Equals(t, 21, game.silver())
 }
+
+func TestGold(t *testing.T) {
+	lines := util.SliceAtLine(sampleInput)
+	game := parse(lines)
+	tst.Equals(t, 40, game.gold())
+}
