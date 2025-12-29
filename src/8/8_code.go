@@ -12,7 +12,7 @@ import (
 
 func main() {
 	silver()
-	// gold()
+	gold()
 }
 
 func silver() {
@@ -31,7 +31,8 @@ func gold() {
 }
 
 func goldCalculate(input []string) string {
-	return "input"
+	g := parse(input)
+	return fmt.Sprintf("%d", g.gold())
 }
 
 type Point struct {
@@ -48,6 +49,18 @@ type Game struct {
 	junctions   []*Junctions
 }
 
+func (g *Game) gold() interface{} {
+	for _, c := range g.comparisons {
+		g.tick(c)
+
+		if len(g.points) == len(g.junctions[0].points) {
+			// found the last two
+			return c.p1.x * c.p2.x
+		}
+	}
+	panic("could not find")
+}
+
 type Comparison struct {
 	p1, p2   *Point
 	distance float64
@@ -55,42 +68,8 @@ type Comparison struct {
 
 func (g *Game) silver(connections int) int {
 	for i := 0; i < connections; i++ {
-		p1 := g.comparisons[i].p1
-		p2 := g.comparisons[i].p2
-
-		// check if p1 is in a set
-		// add to set
-
-		p1Junction := g.getJunction(p1)
-		p2Junction := g.getJunction(p2)
-		if p1Junction != nil && p2Junction != nil {
-
-			if p2Junction != p1Junction {
-				// merge sets
-				for k := range p2Junction.points {
-					p1Junction.points[k] = true
-				}
-
-				// delete original junction
-				for i, j := range g.junctions {
-					if j == p2Junction {
-						g.junctions = append(g.junctions[:i], g.junctions[i+1:]...)
-					}
-				}
-			} else {
-			}
-		} else if p1Junction == nil && p2Junction != nil {
-			p2Junction.points[p1] = true
-
-		} else if p2Junction == nil && p1Junction != nil {
-			p1Junction.points[p2] = true
-		} else {
-			j := Junctions{}
-			j.points = make(map[*Point]bool)
-			j.points[p1] = true
-			j.points[p2] = true
-			g.junctions = append(g.junctions, &j)
-		}
+		comp := g.comparisons[i]
+		g.tick(comp)
 	}
 
 	// now show the 3 largest circuits
@@ -104,6 +83,45 @@ func (g *Game) silver(connections int) int {
 		total *= size
 	}
 	return total
+}
+
+func (g *Game) tick(comp *Comparison) {
+	p1 := comp.p1
+	p2 := comp.p2
+
+	// check if p1 is in a set
+	// add to set
+
+	p1Junction := g.getJunction(p1)
+	p2Junction := g.getJunction(p2)
+	if p1Junction != nil && p2Junction != nil {
+
+		if p2Junction != p1Junction {
+			// merge sets
+			for k := range p2Junction.points {
+				p1Junction.points[k] = true
+			}
+
+			// delete original junction
+			for i, j := range g.junctions {
+				if j == p2Junction {
+					g.junctions = append(g.junctions[:i], g.junctions[i+1:]...)
+				}
+			}
+		} else {
+		}
+	} else if p1Junction == nil && p2Junction != nil {
+		p2Junction.points[p1] = true
+
+	} else if p2Junction == nil && p1Junction != nil {
+		p1Junction.points[p2] = true
+	} else {
+		j := Junctions{}
+		j.points = make(map[*Point]bool)
+		j.points[p1] = true
+		j.points[p2] = true
+		g.junctions = append(g.junctions, &j)
+	}
 }
 
 func (g *Game) getJunction(p1 *Point) *Junctions {

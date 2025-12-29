@@ -45,3 +45,8 @@ func TestSilver(t *testing.T) {
 
 	tst.Equals(t, 40, g.silver(10))
 }
+
+func TestGold(t *testing.T) {
+	g := parse(lines)
+	tst.Equals(t, 25272, g.gold())
+}
