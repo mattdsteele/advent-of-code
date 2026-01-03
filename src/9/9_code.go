@@ -36,24 +36,11 @@ type Game struct {
 	segments []*Segment
 }
 
-// https://wrfranklin.org/Research/Short_Notes/pnpoly.html
-func (g *Game) pointIsInside(x, y int) bool {
-	isInside := false
-	for _, s := range g.segments {
-		i := s.point1
-		j := s.point2
-		if (i.y > y) != (j.y > y) &&
-			x < (j.x-i.x)*(y-i.y)/(j.y-i.y)+i.x {
-			isInside = !isInside
-		}
-	}
-	return isInside
-}
-
 func between(p, a, b int) bool {
 	return p >= a && p <= b || p <= a && p >= b
 }
 
+// https://stackoverflow.com/a/63436180, ported to go
 func (g *Game) pointIsInside2(x, y int) bool {
 	inside := false
 	P := &Point{x, y}
@@ -86,40 +73,6 @@ func (g *Game) pointIsInside2(x, y int) bool {
 	return inside
 }
 
-/*
-// Source - https://stackoverflow.com/a
-// Posted by timepp, modified by community. See post 'Timeline' for change history
-// Retrieved 2026-01-02, License - CC BY-SA 4.0
-
-* Get relationship between a point and a polygon using ray-casting algorithm
- * @param {{x:number, y:number}} P: point to check
- * @param {{x:number, y:number}[]} polygon: the polygon
- * @returns -1: outside, 0: on edge, 1: inside
-function relationPP(P, polygon) {
-    const between = (p, a, b) => p >= a && p <= b || p <= a && p >= b
-    let inside = false
-    for (let i = polygon.length-1, j = 0; j < polygon.length; i = j, j++) {
-        const A = polygon[i]
-        const B = polygon[j]
-        // corner cases
-        if (P.x == A.x && P.y == A.y || P.x == B.x && P.y == B.y) return 0
-        if (A.y == B.y && P.y == A.y && between(P.x, A.x, B.x)) return 0
-
-        if (between(P.y, A.y, B.y)) { // if P inside the vertical range
-            // filter out "ray pass vertex" problem by treating the line a little lower
-            if (P.y == A.y && B.y >= A.y || P.y == B.y && A.y >= B.y) continue
-            // calc cross product `PA X PB`, P lays on left side of AB if c > 0
-            const c = (A.x - P.x) * (B.y - P.y) - (B.x - P.x) * (A.y - P.y)
-            if (c == 0) return 0
-            if ((A.y < B.y) == (c > 0)) inside = !inside
-        }
-    }
-
-    return inside? 1 : -1
-}
-
-*/
-
 func (g *Game) isInside(ix, iy, jx, jy int) bool {
 	top := Segment{&Point{ix, iy}, &Point{ix, jy}}
 	right := Segment{&Point{ix, jy}, &Point{jx, jy}}
@@ -140,13 +93,6 @@ func (g *Game) isInside(ix, iy, jx, jy int) bool {
 		if !g.pointIsInside2(p.x, p.y) {
 			return false
 		}
-	}
-
-	// check one inside
-	minX := min(ix, jx)
-	minY := min(iy, jy)
-	if !g.pointIsInside2(minX+1, minY+1) {
-		return false
 	}
 
 	return true
